@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href="./mstyle.css" rel="stylesheet" type="text/css" media="all">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="area"></div>
+    <nav class="main-menu">
+        <ul>
+
+            <li>
+                <a href="nobarmember.html" id="member-link">
+                  <i class="fa fa-book fa-2x"></i>
+                  <span class="nav-text">
+                    會員資料
+                  </span>
+                </a>
+
+        </ul>
+        <ul class="logout">
+            <li>
+                <a href="sign_in_up.html?logout=1">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">登出</span>
+                </a>
+            </li>  
+        </ul>
+    </nav>
+    <h1>Member Profile</h1>
+    <form id="memberForm">
+        <label for="UserDetail">
+            <p>Username: <span id="message"></span></p>
+        </label>
+        
+        <label for="gender">
+            <p>Gender: <span id="gender"></span></p>
+        </label>
+        <select id="usergender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+    
+        <label for="name">
+            <p>Name:<br><span id="name"></span></p>
+        </label>
+        <input type="text" id="Name" name="name" required>
+    
+        <label for="phone">
+            <p>Phone: <span id="phone"></span></p>
+        </label>
+        <input type="tel" id="Phone" name="phone" required>
+    
+        <label for="address">
+            <p>Address: <span id="address"></span></p>
+        </label>
+        <input type="text" id="Address" name="address" required>
+    
+        <label for="height">
+            <p>Height (cm):<span id="height"></span></p>
+        </label>
+        <input type="text" id="Height" name="height" required>
+    
+        <label for="weight">
+            <p>Weight (kg):<span id="weight"></span></p>
+        </label>
+        <input type="text" id="Weight" name="weight" required>
+    
+        <label for="email">
+            <p>Email:<br><span id="Email"></span></p>
+        </label>
+    
+        <!-- <label for="photo">
+            <p>Photo:<span id="photo"></span></p>
+        </label>
+        <input type="file" id="photo" name="photo" required multiple> -->
+    
+        <button type="submit">Save</button>
+    </form>
+
+    <script>
+        const memberForm = document.getElementById('memberForm');
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = sessionStorage.getItem('username');
+        const messageElement = document.getElementById('message');
+        const responseData = document.getElementById('responseData');
+        //在登入成功後，將使用者名稱存儲在 sessionStorage 中
+        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱 
+        window.onload = function() {
+        //console.log(username)
+        axios({
+            method: 'GET',
+            url: 'http://127.0.0.1:8000/recognition/'+username+'/profile', // 使用適合您應用程式的端點 URL
+            //data: JSON.stringify(formdata),
+            xsrfHeaderName: "X-CSRFToken",
+        })
+        .then(response => {
+            // 使用伺服器返回的資料渲染畫面
+            const responseData = response.data;
+            // 更新表單中對應欄位的值
+            document.getElementById('usergender').value = responseData.Gender;
+            document.getElementById('Name').value = responseData.Name;
+            document.getElementById('Phone').value = responseData.Phone;
+            document.getElementById('Address').value = responseData.Address;
+            document.getElementById('Height').value = responseData.Height;
+            document.getElementById('Weight').value = responseData.Weight;
+            document.getElementById('Email').textContent = responseData.Email;
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+        
+
+        if (username) {
+            messageElement.innerText = username;
+        }
+        // if (responseData) {
+        //     responseData.innerText = responseData;
+        // }
+        };
+        
+        memberForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // 獲取表單數據
+            const gender = document.getElementById('usergender').value;
+            const name = document.getElementById('Name').value;
+            const phone = document.getElementById('Phone').value;
+            const address = document.getElementById('Address').value;
+            const height = document.getElementById('Height').value;
+            const weight = document.getElementById('Weight').value;
+            const email = document.getElementById('Email').textContent; // 不可修改
+            
+            formdata = {
+                "Gender": gender,
+                "Name": name,
+                "Phone": phone,
+                "Address": address,
+                "Height": height,
+                "Weight": weight,
+                "Email": email
+            };
+
+            // 發送 PUT 請求
+            axios({
+                method: 'PUT',
+                url: 'http://127.0.0.1:8000/recognition/'+username+'/profile',
+                xsrfHeaderName: "X-CSRFToken",
+                data: JSON.stringify(formdata)
+            })
+            .then(response => {
+                console.log(response.data);
+                alert('會員資料已成功更新！');
+                // 可添加其他處理成功更新後的操作
+                window.location.href = 'system.html?message=';
+            })
+            .catch(error => {
+                console.log(error);
+                alert('更新會員資料時出現錯誤。');
+            });
+        });
+    
+    </script>
+</body>
+</html>

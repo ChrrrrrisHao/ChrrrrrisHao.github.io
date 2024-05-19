@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href="./pstyle.css" rel="stylesheet" type="text/css" media="all">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <!-- <div class="area"></div> -->
+    <nav class="main-menu">
+        <ul>
+            <li>
+                <a href="system.html">
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                        AI人臉情緒辨識系統
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="member.html">
+                  <i class="fa fa-book fa-2x"></i>
+                  <span class="nav-text">
+                    會員資料
+                  </span>
+                </a>
+            </li>
+            <li class="#">
+                <a href="photo.html">
+                   <i class="fa fa-camera-retro fa-2x"></i>
+                    <span class="nav-text">
+                        相片
+                    </span>
+                </a>
+            <li>
+               <a href="reset_password.html">
+                   <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                        更改密碼
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                   <i class="fa fa-info fa-2x"></i>
+                    <span class="nav-text">
+                        關於情緒辨識
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="logout">
+            <li>
+                <a href="sign_in_up.html?logout=1">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">登出</span>
+                </a>
+            </li>  
+        </ul>
+    </nav>
+    <h1>Photo</h1>
+    <form id="photoname">
+        <label for="UserDetail">
+            <p>Username: <span id="message"></span></p>
+        </label>
+
+        <label for="album">
+            <p>Current album :<br><span id="Face"></span></p>
+        </label>
+
+        <label for="photo">
+            <p>New photoname :<br><span id="photo"></span></p>
+        </label>
+        <input type="text" id="facename" name="facename" required>
+
+        <input type="file" name="newphoto" accept=".jpg, .jpeg" required multiple>
+        
+        <button type="submit">Save</button>
+    </form>
+
+    <script>
+        const fileInput = document.querySelector('input[type="file"]');
+        const photoname = document.getElementById('photoname');
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = sessionStorage.getItem('username');
+        const messageElement = document.getElementById('message');
+        const responseData = document.getElementById('responseData');
+        //在登入成功後，將使用者名稱存儲在 sessionStorage 中
+        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱 
+        window.onload = function() {
+        //console.log(username)
+        axios({
+            method: 'GET',
+            url: 'http://127.0.0.1:8000/recognition/'+username+'/photoupload', // 使用適合您應用程式的端點 URL
+            xsrfHeaderName: "X-CSRFToken",
+        })
+        .then(response => {
+            // 使用伺服器返回的資料渲染畫面
+            const responseData = response.data;
+            // 遍歷每個物件，將 Face_location 顯示在 #Face 元素中
+            responseData.forEach(obj => {
+                const faceSpan = document.getElementById('Face');
+                faceSpan.innerText += obj.facename+ '\n';
+            });
+            console.log(response.data)
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+
+        if (username) {
+            messageElement.innerText = username;
+        }
+        };
+        
+        photoname.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // 獲取表單數據
+            const facename = document.getElementById('facename').value;
+            const fileInput = document.getElementsByName('newphoto')[0];
+            const file = fileInput.files[0]; // 獲取上傳的文件
+            const formData = new FormData();
+            formData.append('facename', facename);
+            formData.append('photo', file);
+
+            axios({
+                method: 'POST',
+                url: 'http://127.0.0.1:8000/recognition/'+username+'/photoupload',
+                xsrfHeaderName: "X-CSRFToken",
+                data: formData
+            })
+            .then(response => {
+                console.log(response.data);
+                alert('會員資料已成功新增！');
+                // 可添加其他處理成功更新後的操作
+                // 重新載入頁面
+                location.reload();
+            })
+            .catch(error => {
+                console.log(error);
+                alert('新增會員資料時出現錯誤。');
+            });
+            
+        });
+    
+    </script>
+</body>
+</html>

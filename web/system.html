@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>recognition system</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href="./sstyle.css" rel="stylesheet" type="text/css" media="all">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="area"></div>
+    <nav class="main-menu">
+        <ul>
+            <li>
+                <a href="system.html">
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                        AI人臉情緒辨識系統
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="member.html">
+                  <i class="fa fa-book fa-2x"></i>
+                  <span class="nav-text">
+                    會員資料
+                  </span>
+                </a>
+            </li>
+            <li class="#">
+                <a href="photo.html">
+                   <i class="fa fa-camera-retro fa-2x"></i>
+                    <span class="nav-text">
+                        相片
+                    </span>
+                </a>
+            <li>
+               <a href="reset_password.html">
+                   <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                        更改密碼
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                   <i class="fa fa-info fa-2x"></i>
+                    <span class="nav-text">
+                        關於情緒辨識
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="logout">
+            <li>
+                <a href="sign_in_up.html?logout=1">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">登出</span>
+                </a>
+            </li>  
+        </ul>
+    </nav>
+    <h1>AI人臉情緒辨識系統</h1>
+    <video id="videoElement" style="display: none;" autoplay></video>
+    <canvas id="canvasElement" width="800" height="600"></canvas>
+    <label for="UserDetail">
+        <p>Username: <span id="message"></span></p>
+    </label>
+    <button id="showPieChartButton">顯示圓餅圖</button>
+    <img id="pieChart" src="" alt="圓餅圖"/>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = sessionStorage.getItem('username');
+        const messageElement = document.getElementById('message');
+        const responseData = document.getElementById('responseData');
+        const videoElement = document.getElementById('videoElement');
+        const canvasElement = document.getElementById('canvasElement');
+        const context = canvasElement.getContext('2d');
+        const showPieChartButton = document.getElementById('showPieChartButton');
+        const pieChart = document.getElementById('pieChart');
+
+        if (username) {
+            messageElement.innerText = username;
+        }
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                const videoWidth = canvasElement.width;
+                const videoHeight = canvasElement.height;
+                console.log('Video width:', videoWidth);
+                console.log('Video height:', videoHeight);
+
+                setInterval(captureFrame, 16.67);
+                // 每秒執行一次 captureAndSendToBackend 函數
+                setInterval(sendToBackend, 1000);
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ', err);
+            });
+
+        function captureFrame() {
+        // 在 canvas 上繪製當前鏡頭畫面
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        }
+
+
+        function sendToBackend() {
+            // 從 canvas 中獲取圖片文件
+            canvasElement.toBlob(function(blob) {
+                //console.log(username);
+                console.log(blob);
+                // 創建 FormData 對象並將文件添加到其中
+                const formData = new FormData();
+                formData.append('img', blob, 'camera_capture.png');
+                
+                axios({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
+                    xsrfHeaderName: "X-CSRFToken",
+                    data: formData
+                })
+                .then(response => {
+                    console.log(response.data);
+                    drawFaces(response.data); // 繪製人臉框
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }, 'img/png');
+        }
+
+        function drawFaces(data) {
+            const faceLocation = data.facelocation;
+            const emotionLabel = data.emotionlabel;
+            const facename = data.facename[0];
+            console.log(faceLocation);
+            console.log(facename);
+            if (faceLocation && facename) {
+                const x = faceLocation[0];
+                const y = faceLocation[1];
+                const width = faceLocation[2];
+                const height = faceLocation[3];
+                // 清除上一帧的画面
+                // context.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+                // 绘制人脸框
+                context.strokeStyle = '#00ff00';
+                context.lineWidth = 5 ;
+                context.strokeRect(x, y, width, height);
+
+                // 在人脸框的左上角显示人名
+                context.fillStyle = '#00ff00';
+                context.font = '14px Arial';
+                context.fillText(facename, x, y - 5);
+
+                // 在人脸框的右上角显示情绪
+                context.fillText(emotionLabel, x + width + 5, y);
+            } else {
+                console.error('Face data is missing');
+            }
+        }
+
+        showPieChartButton.addEventListener('click', function() {
+            axios({
+                method: 'GET',
+                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
+                responseType: 'blob'
+            })
+            .then(response => {
+                const url = URL.createObjectURL(response.data);
+                pieChart.src = url;
+                pieChart.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('擷取失敗', error);
+            });
+        });
+
+        // 捕獲每個視頻幀並發送到後端
+        // setInterval(captureFrame, 1000); // 每隔一秒捕獲一次視頻幀
+    
+    </script>
+</body>
+</html>
