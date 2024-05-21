@@ -105,7 +105,6 @@
             context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         }
 
-
         function sendToBackend() {
             // 從 canvas 中獲取圖片文件
             canvasElement.toBlob(function(blob) {
@@ -114,7 +113,6 @@
                 // 創建 FormData 對象並將文件添加到其中
                 const formData = new FormData();
                 formData.append('img', blob, 'camera_capture.png');
-                
                 axios({
                     method: 'POST',
                     url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',

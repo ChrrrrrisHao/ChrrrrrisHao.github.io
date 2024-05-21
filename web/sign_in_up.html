@@ -193,19 +193,4 @@
             };
 
         }
-
-        const logout = new URLSearchParams(window.location.search).get('logout');
-
-if (logout === '1') {
-    fetch('/recognition/logout/')
-       .then(response => response.json())
-       .then(data => {
-            if (data.message === '1') {
-                alert('已成功登出！');
-                location.href = 'home.html';
-            } else {
-                alert('登出失敗，請重試！');
-            }
-        });
-}
 </script>
