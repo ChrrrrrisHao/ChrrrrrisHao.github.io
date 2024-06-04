@@ -130,6 +130,12 @@ button[type="submit"] {
     font-size: 32px;
 }
 
+button[id="deleteAlbumButton"] {
+    width: 200px;
+    height: 60px;
+    font-size: 32px;
+}
+
 .main-menu { 
     position: fixed;
     top: 0;
