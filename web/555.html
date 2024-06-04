@@ -3,67 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log in</title>
+    <title>recognition system</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./style.css" rel="stylesheet" type="text/css" media="all">
+    <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href="./sstyle.css" rel="stylesheet" type="text/css" media="all">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <br>
-    <div class="container">
-        <h1 class="text-center">AI人臉情緒辨識系統</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Sign Up -->
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title">Sign Up</h2>
-                        <form action="#" class="form" id="form1">
-                            <div class="form-group">
-                                <input type="text" placeholder="User" class="form-control" id="userInput" />
-                            </div>
-                            <div class="form-group">
-                                <input type="email" placeholder="Email" class="form-control" id="emailInput" />
-                            </div>
-                            <div class="form-group">
-                                <input type="password" placeholder="Password" class="form-control" id="passwordInput" />
-                            </div>
-                            <div id="error-message"></div><div id="message"></div>
-                            <button class="btn btn-primary">Sign Up</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <!-- Sign In -->
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title">Sign In</h2>
-                        <form action="#" class="form" id="form2">
-                            <div class="form-group">
-                                <input type="text" placeholder="User" class="form-control" id="iuserInput" />
-                            </div>
-                            <div class="form-group">
-                                <input type="password" placeholder="Password" class="form-control" id="ipasswordInput" />
-                            </div>
-                            <div id="imessage"></div>
-                            <a href="forgot_password.html" class="link" id="forgotPassword">Forgot your password?</a>
-                            <button class="btn btn-primary">Sign In</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Overlay -->
-        <div class="d-flex justify-content-center mt-3">
-            <button class="btn btn-secondary mr-2" id="signIn">Sign In</button>
-            <button class="btn btn-secondary" id="signUp">Sign Up</button>
-        </div>
+    <div class="area"></div>
+    <nav class="main-menu">
+        <ul>
+            <li>
+                <a href="system.html">
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                        AI人臉情緒辨識系統
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="member.html">
+                  <i class="fa fa-book fa-2x"></i>
+                  <span class="nav-text">
+                    會員資料
+                  </span>
+                </a>
+            </li>
+            <li class="#">
+                <a href="photo.html">
+                   <i class="fa fa-camera-retro fa-2x"></i>
+                    <span class="nav-text">
+                        相片
+                    </span>
+                </a>
+            <li>
+               <a href="reset_password.html">
+                   <i class="fa fa-cogs fa-2x"></i>
+                    <span class="nav-text">
+                        更改密碼
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                   <i class="fa fa-info fa-2x"></i>
+                    <span class="nav-text">
+                        關於情緒辨識
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="logout">
+            <li>
+                <a href="sign_in_up.html?logout=1">
+                    <i class="fa fa-power-off fa-2x"></i>
+                    <span class="nav-text">登出</span>
+                </a>
+            </li>  
+        </ul>
+    </nav>
+    <h1>AI人臉情緒辨識系統</h1>
+    <video id="videoElement" style="display: none;" autoplay></video>
+    <canvas id="canvasElement" width="800" height="600"></canvas>
+    <label for="UserDetail">
+        <p>Username: <span id="message"></span></p>
+    </label>
+    <div>
+        <select id="timeRange" required>
+            <option value="">請選擇</option>
+            <option value="1">1 小時內</option>
+            <option value="3">3 小時內</option>
+            <option value="5">5 小時內</option>
+            <option value="12">12 小時內</option>
+            <option value="24">24 小時內</option>
+        </select>
+        <button id="showPieChartButton">顯示圓餅圖</button>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js"></script>
+    <img id="pieChart" src="" alt="圓餅圖"/>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = sessionStorage.getItem('username');
+        const messageElement = document.getElementById('message');
+        const responseData = document.getElementById('responseData');
+        const videoElement = document.getElementById('videoElement');
+        const canvasElement = document.getElementById('canvasElement');
+        const context = canvasElement.getContext('2d');
+        const timeRangeSelect = document.getElementById('timeRange');
+        const showPieChartButton = document.getElementById('showPieChartButton');
+        const pieChart = document.getElementById('pieChart');
+
+        if (username) {
+            messageElement.innerText = username;
+        }
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                const videoWidth = canvasElement.width;
+                const videoHeight = canvasElement.height;
+                console.log('Video width:', videoWidth);
+                console.log('Video height:', videoHeight);
+
+                setInterval(captureFrame, 16.67);
+                // 每秒執行一次 captureAndSendToBackend 函數
+                setInterval(sendToBackend, 1000);
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ', err);
+            });
+
+        function captureFrame() {
+        // 在 canvas 上繪製當前鏡頭畫面
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        }
+
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                const videoWidth = canvasElement.width;
+                const videoHeight = canvasElement.height;
+                console.log('Video width:', videoWidth);
+                console.log('Video height:', videoHeight);
+
+                // Capture frame at 60 FPS
+                setInterval(captureFrame, 16.67);
+
+                // Send to backend every second
+                setInterval(sendToBackend, 1000);
+            })
+            .catch(function(err) {
+                console.error('Error accessing the camera: ', err);
+            });
+
+        let lastFaceData = null;
+
+        function captureFrame() {
+            // Draw current video frame on canvas
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+            // If we have face data, draw the face box and labels
+            if (lastFaceData) {
+                drawFaces(lastFaceData);
+            }
+        }
+
+        function sendToBackend() {
+            // Get image from canvas
+            canvasElement.toBlob(function(blob) {
+                // Create FormData and append the image
+                const formData = new FormData();
+                formData.append('img', blob, 'camera_capture.png');
+                
+                axios({
+                    method: 'POST',
+                    url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
+                    xsrfHeaderName: "X-CSRFToken",
+                    data: formData
+                })
+                .then(response => {
+                    lastFaceData = response.data; // Save the received face data
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }, 'image/png');
+        }
+
+        function drawFaces(data) {
+            const faceLocation = data.facelocation;
+            const emotionLocation = data.emotionlocation;
+            const emotionLabel = data.emotionlabel;
+            const facename = data.facename[0];
+
+            let x, y, width, height;
+
+            // Determine the position and size of the box
+            if (faceLocation) {
+                [x, y, width, height] = faceLocation;
+            } else if (emotionLocation) {
+                [x, y, width, height] = emotionLocation;
+            } else {
+                console.error('No face or emotion location data available');
+                return;
+            }
+
+            // Draw the face box
+            context.strokeStyle = '#00ff00';
+            context.lineWidth = 5;
+            context.strokeRect(x-20, y-50, width*0.8, height*0.85);
+
+            // Draw the emotion label
+            context.fillStyle = '#00ff00';
+            context.font = '30px Arial';
+            context.fillText(emotionLabel, x-20 + width *0.8, y-50);
+
+            // Draw the name label (if available)
+            if (facename) {
+                context.fillText(facename, x-20, y - 50);
+            }
+        }
+
+        showPieChartButton.addEventListener('click', function() {
+            const timeRange = document.getElementById('timeRange').value;
+            formdata = {
+                "time": timeRange
+            };
+
+            console.log(formdata)
+            axios({
+                method: 'PUT',
+                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
+                data: JSON.stringify(formdata),
+                responseType: 'blob'
+                
+            })
+            .then(response => {
+                const url = URL.createObjectURL(response.data);
+                pieChart.src = url;
+                pieChart.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('擷取失敗', error);
+            });
+        });
+
+        // 捕獲每個視頻幀並發送到後端
+        // setInterval(captureFrame, 1000); // 每隔一秒捕獲一次視頻幀
+    
+    </script>
 </body>
 </html>

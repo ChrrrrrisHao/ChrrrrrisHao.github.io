@@ -55,7 +55,7 @@
         </ul>
         <ul class="logout">
             <li>
-                <a href="sign_in_up.html?logout=1">
+                <a href="#" id="logoutButton">
                     <i class="fa fa-power-off fa-2x"></i>
                     <span class="nav-text">登出</span>
                 </a>
@@ -70,6 +70,7 @@
     </label>
     <div class="button-container">
         <select id="timeRange" required>
+            <option value="0">請選擇時間</option>
             <option value="1">1 小時內</option>
             <option value="3">3 小時內</option>
             <option value="5">5 小時內</option>
@@ -95,6 +96,10 @@
         const exportHistoryButton = document.getElementById('exportHistoryButton');
         const deleteCacheButton = document.getElementById('deleteCacheButton');
         const pieChart = document.getElementById('pieChart');
+
+        if (!sessionStorage.getItem('username')) {
+            window.location.href = 'sign_in_up.html';
+        }
 
         if (username) {
             messageElement.innerText = username;
@@ -213,8 +218,9 @@
                 "time": timeRange
             };
 
+            // console.log(formdata)
             axios({
-                method: 'GET',
+                method: 'PUT',
                 url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
                 data: JSON.stringify(formdata),
                 responseType: 'blob'
@@ -261,6 +267,26 @@
             .catch(error => {
                 console.error('刪除歷史快取失敗', error);
             });
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            axios.get('http://127.0.0.1:8000/recognition/logout')
+                .then(function(response) {
+                    if (response.data.message === "1") {
+                        alert('已成功登出！');
+                        // 清除 sessionStorage 中的 username
+                        sessionStorage.removeItem('username');
+                        window.location.href = 'sign_in_up.html';
+                    } else {
+                        alert('登出失敗，請重試！');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error during logout:', error);
+                    alert('登出失敗，請重試！');
+                });
         });
 
     </script>
