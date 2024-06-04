@@ -75,7 +75,7 @@ h1 {
 
 
 
-.id {
+/* .id {
     background-color: var(--white);
     border-radius: var(--button-radius);
     box-shadow: 0 0.9rem 1.7rem rgba(54, 4, 236, 0.25),
@@ -85,34 +85,8 @@ h1 {
     overflow: hidden;
     position: relative;
     width: 100%;
-}
+} */
 
-form {
-    background-color: var(--red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 3rem;
-    height: 100%;
-    text-align: center;
-    width: 35%;
-    /* 設定表單寬度 */
-    margin: 0 auto;
-    /* 將表單置中 */
-}
-
-#memberForm {
-    background-color: #2b27277a;
-    border: 3px solid #eed81700;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.form>.btn {
-    margin-top: 1.5rem;
-}
 
 label {
     font-size: 1.25cm; /* 設定標籤文字大小 */
@@ -129,12 +103,12 @@ select {
     /* 設定輸入框和下拉選單內邊距 */
     margin-top: 5px;
     /* 設定輸入框和下拉選單上邊距 */
+    background-color: rgba(209, 211, 201, 0.801);
+    /* 設定按鈕背景顏色 */
+    text-align: center;
+    /* 將按鈕文字置中 */
 }
 
-input[type="text"] {
-    text-align: center;
-    font-size: 20px;
-}
 
 #showPieChartButton {
     display: block;
@@ -143,12 +117,56 @@ input[type="text"] {
     /* 設定按鈕內邊距 */
     margin: 20px auto;
     /* 將按鈕置中並設定上下邊距 */
-    background-color: rgba(115, 117, 106, 0.801);
+    background-color: rgba(209, 211, 201, 0.801);
     /* 設定按鈕背景顏色 */
     color: #000000;
     /* 設定按鈕文字顏色 */
     text-align: center;
     /* 將按鈕文字置中 */
+}
+
+#exportHistoryButton {
+    display: block;
+    /* 讓按鈕換行顯示 */
+    padding: 10px;
+    /* 設定按鈕內邊距 */
+    margin: 20px auto;
+    /* 將按鈕置中並設定上下邊距 */
+    background-color: rgba(209, 211, 201, 0.801);
+    /* 設定按鈕背景顏色 */
+    color: #000000;
+    /* 設定按鈕文字顏色 */
+    text-align: center;
+    /* 將按鈕文字置中 */
+}
+
+#deleteCacheButton {
+    display: block;
+    /* 讓按鈕換行顯示 */
+    padding: 10px;
+    /* 設定按鈕內邊距 */
+    margin: 20px auto;
+    /* 將按鈕置中並設定上下邊距 */
+    background-color: rgba(209, 211, 201, 0.801);
+    /* 設定按鈕背景顏色 */
+    color: #000000;
+    /* 設定按鈕文字顏色 */
+    text-align: center;
+    /* 將按鈕文字置中 */
+}
+
+.button-container {
+    background-color: #8a8484; /* 背景色 */
+    border: 1px solid #050202;    /* 邊框 */
+    padding: 20px;             /* 內邊距 */
+    border-radius: 15px;       /* 邊框圓角 */
+    display: inline-block;     /* 使容器適應內容大小 */
+    position: fixed;
+    bottom: 0;                 /* 貼齊底部 */
+}
+
+.button-container button {
+    margin-right: 10px;        /* 按鈕之間的距離 */
 }
 
 #pieChart {
@@ -158,12 +176,6 @@ input[type="text"] {
     left: 50%;
     transform: translateX(-50%);
     max-width: 300px; /* 可根据需要调整最大宽度 */
-}
-
-button[type="submit"] {
-    width: 200px;
-    height: 60px;
-    font-size: 32px;
 }
 
 .main-menu { 

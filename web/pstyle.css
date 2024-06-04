@@ -112,13 +112,11 @@ input[type="text"] {
 button {
     display: block;
     /* 讓按鈕換行顯示 */
-    width: 50px;
-    /* 設定按鈕寬度 */
     padding: 10px;
     /* 設定按鈕內邊距 */
-    margin: 10px auto;
+    margin: 20px auto;
     /* 將按鈕置中並設定上下邊距 */
-    background-color: rgb(74, 117, 128);
+    background-color: rgba(209, 211, 201, 0.801);
     /* 設定按鈕背景顏色 */
     color: #000000;
     /* 設定按鈕文字顏色 */

@@ -80,6 +80,17 @@
         <input type="file" name="newphoto" accept=".jpg, .jpeg" required multiple>
         
         <button type="submit">Save</button>
+
+        <label for="deleteAlbumSelect">
+            <p>Delete album:</p>
+        </label>
+
+        <select id="deleteAlbumSelect">
+            <option value="" disabled selected>Select an album</option>
+        </select>
+
+        <button id="deleteAlbumButton">Delete</button>
+
     </form>
 
     <script>
@@ -105,6 +116,11 @@
             responseData.forEach(obj => {
                 const faceSpan = document.getElementById('Face');
                 faceSpan.innerText += obj.facename+ '\n';
+                const option = document.createElement('option');
+                option.value = obj.facename; // 使用 Face 元素的值作為選項的值
+                option.textContent = obj.facename;
+                deleteAlbumSelect.appendChild(option);
+
             });
             console.log(response.data)
         })
@@ -145,7 +161,28 @@
                 console.log(error);
                 alert('新增會員資料時出現錯誤。');
             });
-            
+        });
+
+        deleteAlbumButton.addEventListener('click', function() {
+            const selectedAlbum = deleteAlbumSelect.value;
+            if (selectedAlbum) {
+                axios({
+                    method: 'DELETE',
+                    url: 'http://127.0.0.1:8000/recognition/' + username + '/album/' + selectedAlbum,
+                    xsrfHeaderName: "X-CSRFToken",
+                })
+                .then(response => {
+                    console.log(response.data);
+                    alert('相簿已成功刪除！');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('刪除相簿時出現錯誤。');
+                });
+            } else {
+                alert('請選擇一個相簿進行刪除。');
+            }
         });
 
         document.getElementById('logoutButton').addEventListener('click', function(event) {

@@ -68,19 +68,7 @@
     <label for="UserDetail">
         <p>Username: <span id="message"></span></p>
     </label>
-    <div class="button-container">
-        <select id="timeRange" required>
-            <option value="1">1 小時內</option>
-            <option value="3">3 小時內</option>
-            <option value="5">5 小時內</option>
-            <option value="12">12 小時內</option>
-            <option value="24">24 小時內</option>
-        </select>
-        <button id="showPieChartButton">顯示圓餅圖</button>
-        <button id="exportHistoryButton">匯出歷史紀錄</button>
-        <button id="deleteCacheButton">刪除歷史快取</button>
-    </div>
-    
+    <button id="showPieChartButton">顯示圓餅圖</button>
     <img id="pieChart" src="" alt="圓餅圖"/>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -90,10 +78,7 @@
         const videoElement = document.getElementById('videoElement');
         const canvasElement = document.getElementById('canvasElement');
         const context = canvasElement.getContext('2d');
-        const timeRangeSelect = document.getElementById('timeRange');
         const showPieChartButton = document.getElementById('showPieChartButton');
-        const exportHistoryButton = document.getElementById('exportHistoryButton');
-        const deleteCacheButton = document.getElementById('deleteCacheButton');
         const pieChart = document.getElementById('pieChart');
 
         if (username) {
@@ -194,31 +179,26 @@
             // Draw the face box
             context.strokeStyle = '#00ff00';
             context.lineWidth = 5;
-            context.strokeRect(x-20, y-50, width*0.8, height*0.85);
+            context.strokeRect(x, y, width, height);
 
             // Draw the emotion label
             context.fillStyle = '#00ff00';
             context.font = '30px Arial';
-            context.fillText(emotionLabel, x-20 + width *0.8, y-50);
+            context.fillText(emotionLabel, x + width + 5, y);
 
             // Draw the name label (if available)
             if (facename) {
-                context.fillText(facename, x-20, y - 50);
+                context.fillText(facename, x, y - 5);
             }
         }
 
-        showPieChartButton.addEventListener('click', function() {
-            const timeRange = document.getElementById('timeRange').value;
-            formdata = {
-                "time": timeRange
-            };
 
+
+        showPieChartButton.addEventListener('click', function() {
             axios({
                 method: 'GET',
                 url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
-                data: JSON.stringify(formdata),
                 responseType: 'blob'
-                
             })
             .then(response => {
                 const url = URL.createObjectURL(response.data);
@@ -230,39 +210,9 @@
             });
         });
 
-        exportHistoryButton.addEventListener('click', function() {
-            axios({
-                method: 'GET',
-                url: 'http://127.0.0.1:8000/recognition/' + username + '/export_history',
-                responseType: 'blob'
-            })
-            .then(response => {
-                const url = URL.createObjectURL(response.data);
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'history_record.csv');
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-            })
-            .catch(error => {
-                console.error('匯出歷史紀錄失敗', error);
-            });
-        });
-
-        deleteCacheButton.addEventListener('click', function() {
-            axios({
-                method: 'DELETE',
-                url: 'http://127.0.0.1:8000/recognition/' + username + '/delete_cache'
-            })
-            .then(response => {
-                alert('歷史快取已刪除');
-            })
-            .catch(error => {
-                console.error('刪除歷史快取失敗', error);
-            });
-        });
-
+        // 捕獲每個視頻幀並發送到後端
+        // setInterval(captureFrame, 1000); // 每隔一秒捕獲一次視頻幀
+    
     </script>
 </body>
 </html>

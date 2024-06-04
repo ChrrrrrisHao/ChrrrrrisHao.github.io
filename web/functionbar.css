@@ -45,9 +45,11 @@ nav.main-menu.expanded {
 
 .main-menu>ul {
     margin: 7px 0;
+    margin-bottom: 30px;
 }
 
 .main-menu li {
+    margin-bottom: 30px;
     position: relative;
     display: block;
     width: 250px;
