@@ -56,6 +56,7 @@ html {
     right: 0;
     /* 距離右側 0 */
     transform: translate(0%, 0%);
+    border-radius: 20px;
 }
 
 label {
@@ -66,6 +67,7 @@ label {
     /* 可选：为了提高可读性，添加一些填充 */
     background-color: #2b27277a;
     /* 可选：添加背景颜色 */
+    border-radius: 20px;
 }
 
 h1 {
@@ -88,6 +90,7 @@ h1 {
     /* 設置絕對定位 */
     top: 0;
     /* 將元素置於容器頂部 */
+    border-radius: 20px;
 }
 
 
@@ -119,14 +122,6 @@ form {
     /* 將表單置中 */
 }
 
-#memberForm {
-    background-color: #2b27277a;
-    border: 3px solid #eed81700;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 .form>.btn {
     margin-top: 1.5rem;
 }
@@ -142,57 +137,133 @@ label {
     /* 設定標籤文字顏色 */
 }
 
+/* 通用按钮和下拉菜单样式 */
 input,
-select {
-    width: 100%;
-    /* 設定輸入框和下拉選單寬度 */
-    padding: 10px;
-    /* 設定輸入框和下拉選單內邊距 */
-    margin-top: 5px;
-    /* 設定輸入框和下拉選單上邊距 */
+select,
+button {
+    width: 50%;
+    /* 设定宽度 */
+    padding: 20px;
+    /* 设定内边距 */
+    margin-top: 20px;
+    /* 设定上边距 */
+    font-size: 16px;
+    /* 设定字体大小 */
+    border: 2px solid #ccc;
+    /* 设定边框 */
+    border-radius: 5px;
+    /* 设定圆角 */
+    background-color: #f9f9f9;
+    /* 设定背景色 */
+    color: #333;
+    /* 设定文字颜色 */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 设定内阴影 */
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+    /* 设定过渡效果 */
+    cursor: pointer;
+    /* 鼠标变成指针 */
 }
 
 input[type="text"] {
     text-align: center;
-    font-size: 20px;
+    font-size: 30px;
 }
 
-#showPieChartButton {
-    display: block;
-    /* 讓按鈕換行顯示 */
-    padding: 10px;
-    /* 設定按鈕內邊距 */
+/* 悬停和点击效果 */
+input:hover,
+select:hover,
+button:hover {
+    border-color: #66afe9;
+    /* 悬停时的边框颜色 */
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+    /* 悬停时的阴影效果 */
+    background-color: #e6f7ff;
+    /* 悬停时的背景色 */
+}
+
+input:active,
+select:active,
+button:active {
+    background-color: #e0e0e0;
+    /* 点击时的背景色 */
+}
+
+input:focus,
+select:focus,
+button:focus {
+    border-color: #e4dddd;
+    /* 聚焦时的边框颜色 */
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+    /* 聚焦时的阴影效果 */
+    outline: none;
+    /* 移除默认的聚焦边框 */
+}
+
+/* 特定按钮样式 */
+#showPieChartButton,
+#exportHistoryButton,
+#deleteCacheButton {
+    display: hidden;
+    /* 让按钮换行显示 */
+    padding: 40px;
+    /* 设定按钮内边距 */
     margin: 20px auto;
-    /* 將按鈕置中並設定上下邊距 */
-    background-color: rgba(115, 117, 106, 0.801);
-    /* 設定按鈕背景顏色 */
+    /* 设定上下边距并居中 */
+    background-color: rgba(206, 207, 201, 0.801);
+    /* 设定按钮背景颜色 */
     color: #000000;
-    /* 設定按鈕文字顏色 */
+    /* 设定按钮文字颜色 */
     text-align: center;
-    /* 將按鈕文字置中 */
+    /* 文字居中 */
+    font-size: 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 235px;
 }
 
+/* 圓餅圖 */
 #pieChart {
     display: none;
-    /* Initially hidden */
     position: fixed;
     bottom: 0;
-    left: 30%;
+    left: 35%;
     transform: translateX(-50%);
-    max-width: 600px;
-    /* 可根据需要调整最大宽度 */
+    max-width: 850px;
 }
 
-button[type="submit"] {
-    width: 200px;
-    height: 60px;
-    font-size: 32px;
-}
-
+/* 主菜单样式 */
 .main-menu {
     position: fixed;
     top: 0;
     left: 0;
     box-shadow: 0 0 10px rgb(212, 18, 18);
     border: 10px solid rgb(92, 92, 102);
+}
+
+/* 按钮容器样式 */
+.button-container {
+    position: absolute;
+    top: 20%; /* 距離頁面頂部的距離 */
+    left: 79%; /* 距離頁面左側的距離 */
+    transform: translateX(-50%); /* 將元素居中 */
+
+    border: 3px solid #ddd;
+    /* 外框线 */
+    padding: 8px;
+    /* 内边距 */
+    background-color: #f9f9f9;
+    /* 背景颜色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* 阴影 */
+    border-radius: 20px;
+    /* 圆角 */
+    display: flex;
+    /* 使用弹性盒子模型 */
+    justify-content: space-around;
+    /* 子元素均匀分布 */
+    align-items: center;
+    /* 子元素垂直居中 */
+    gap: 10px;
+    /* 子元素之间的距离 */
 }

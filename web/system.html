@@ -217,7 +217,6 @@
             formdata = {
                 "time": timeRange
             };
-
             // console.log(formdata)
             axios({
                 method: 'PUT',
@@ -259,7 +258,7 @@
         deleteCacheButton.addEventListener('click', function() {
             axios({
                 method: 'DELETE',
-                url: 'http://127.0.0.1:8000/recognition/' + username + '/delete_cache'
+                url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
             })
             .then(response => {
                 alert('歷史快取已刪除');
