@@ -13,7 +13,7 @@
     <div class="area"></div>
     <nav class="main-menu">
         <ul>
-            <li>
+            <li class="active">
                 <a href="system.html">
                     <i class="fa fa-home fa-2x"></i>
                     <span class="nav-text">
@@ -44,14 +44,6 @@
                     </span>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                   <i class="fa fa-info fa-2x"></i>
-                    <span class="nav-text">
-                        關於情緒辨識
-                    </span>
-                </a>
-            </li>
         </ul>
         <ul class="logout">
             <li>
@@ -78,6 +70,7 @@
             <option value="24">24 小時內</option>
         </select>
         <button id="showPieChartButton">顯示圓餅圖</button>
+        <button id="showFileLocationButton">顯示檔案位置</button>
         <button id="exportHistoryButton">匯出歷史紀錄</button>
         <button id="deleteCacheButton">刪除歷史快取</button>
     </div>
@@ -104,6 +97,15 @@
         if (username) {
             messageElement.innerText = username;
         }
+
+        window.onload = function() {
+            axios({
+                method: 'GET',
+                url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/basetime', // 使用適合您應用程式的端點 URL
+                xsrfHeaderName: "X-CSRFToken",
+            })
+        };
+
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
                 videoElement.srcObject = stream;
@@ -165,7 +167,7 @@
                 
                 axios({
                     method: 'POST',
-                    url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
+                    url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/' + username + '/detect',
                     xsrfHeaderName: "X-CSRFToken",
                     data: formData
                 })
@@ -220,7 +222,7 @@
             // console.log(formdata)
             axios({
                 method: 'PUT',
-                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
+                url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/'+username+'/detect',
                 data: JSON.stringify(formdata),
                 responseType: 'blob'
                 
@@ -237,8 +239,8 @@
 
         exportHistoryButton.addEventListener('click', function() {
             axios({
-                method: 'GET',
-                url: 'http://127.0.0.1:8000/recognition/' + username + '/export_history',
+                method: 'PATCH',
+                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
                 responseType: 'blob'
             })
             .then(response => {

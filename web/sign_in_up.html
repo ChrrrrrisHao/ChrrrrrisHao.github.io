@@ -97,7 +97,7 @@
                 "password": passwordValue};
                 axios({
                     method:'POST',
-                    url:'http://127.0.0.1:8000/recognition/signup',
+                    url:'https://f43f-106-105-82-151.ngrok-free.app/recognition/signup',
                     data: JSON.stringify(formdata)
                 })
                 .then(response => {
@@ -147,7 +147,7 @@
                 "password": ipasswordValue};
                 axios({
                     method:'POST',
-                    url:'http://127.0.0.1:8000/recognition/login',
+                    url:'https://f43f-106-105-82-151.ngrok-free.app/recognition/login',
                     data: JSON.stringify(formdata),
                     xsrfHeaderName: "X-CSRFToken",
                 })
