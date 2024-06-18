@@ -6,6 +6,25 @@
     <title>Log in</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href ="./style.css" rel ="stylesheet" type ="text/css" media ="all">
+    <link href ="./home.css" rel ="stylesheet" type ="text/css" media ="all">
+    <style>
+        h1 {
+            font-size: 3cm;
+            font-weight: bold;
+            color: rgb(228, 204, 127);
+            background-color: #2b2727a2;
+            border: 1px solid #00000079;
+            padding: 20px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(128, 33, 33, 0.1);
+        }
+        label {
+            font-size: 1.25cm;
+            display: block;
+            margin-top: 30px;
+            color: rgb(228, 204, 127);
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
@@ -52,10 +71,7 @@
     const fistForm = document.getElementById("form1");
     const secondForm = document.getElementById("form2");
     const container = document.querySelector(".container");
-    const serverurl = sessionStorage.getItem('servername');
-    if (!sessionStorage.getItem('servername')) {
-        window.location.href = 'nobarserverurl.html';
-    }
+
         signInBtn.addEventListener("click", () => {
             container.classList.remove("right-panel-active");
         });
@@ -84,11 +100,6 @@
                     message.style.color = 'red';
                     return;
                 }
-                // if (userValue.length < 5 || passwordValue.length < 5) {
-                //     document.getElementById('message').innerText = '帳號和密碼必須至少為5個字符。';
-                //     message.style.color = 'red';
-                //     return;
-                // }
                 console.log("Sign Up Form Data:");
                 console.log("User:", userValue);
                 console.log("Email:", emailValue);
@@ -100,18 +111,15 @@
                 "password": passwordValue};
                 axios({
                     method:'POST',
-                    url:serverurl+'/recognition/signup',
+                    url:'http://127.0.0.1:8000/recognition/signup',
                     data: JSON.stringify(formdata)
                 })
                 .then(response => {
                     console.log(response.data);
                     let MessageElement = document.getElementById('message');
                     if (response.data.message === '1') {
-                        document.getElementById('message').innerText = '註冊成功,1秒後轉至登入系統';
+                        document.getElementById('message').innerText = '註冊成功,請重新登入';
                         MessageElement.style.color = 'green';
-                        setTimeout(() => {
-                            document.getElementById('signIn').click();
-                        }, 500);
                     }let errorMessageElement = document.getElementById('message');
                     if (response.data.message === '01') {
                         document.getElementById('message').innerText = '信箱重複,請重新輸入'; 
@@ -134,6 +142,7 @@
                 console.log(error.config);
                 })
             }
+            //登入後跳轉到home.html
             if (type === 'signin') { 
                 const iuserValue = document.getElementById("iuserInput").value;
                 const ipasswordValue = document.getElementById("ipasswordInput").value;
@@ -141,16 +150,16 @@
                     document.getElementById('imessage').innerText = 'Please fill in all fields for Sign In.';
                     imessage.style.color = 'red';
                     return;
-                }
+            }
                 console.log("Sign In Form Data:");
-                console.log("Username:", iuserValue);
+                console.log("User:", iuserValue);
                 console.log("Password:", ipasswordValue);
                 formdata = {
                 "Username": iuserValue,
                 "password": ipasswordValue};
                 axios({
                     method:'POST',
-                    url:serverurl+'/recognition/login',
+                    url:'http://127.0.0.1:8000/recognition/login',
                     data: JSON.stringify(formdata),
                     xsrfHeaderName: "X-CSRFToken",
                 })
@@ -167,17 +176,9 @@
                         ierrorMessageElement.style.color = 'red'; 
                         }
                     else if(response.data.message !== ('1' ||'0')){
-                        const username=response.data.username;
-                        const is_active=response.data.is_active;
-                        console.log(is_active);
-                        sessionStorage.setItem('username', username);
                         document.getElementById('imessage').innerText = '成功登入';
                         iMessageElement.style.color = 'green';
-                        if (is_active) {
-                            window.location.href = 'system.html?message=' + response.data.username;
-                        } else {
-                            window.location.href = 'nobarmember.html?message=' + response.data.username;
-                        }
+                        window.location.href = 'member.html?message=' + response.data.message;
                         }
                 })
                 .catch(error =>{

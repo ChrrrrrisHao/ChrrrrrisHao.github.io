@@ -68,6 +68,14 @@ label {
     background-color: #2b27277a;
     /* 可选：添加背景颜色 */
     border-radius: 20px;
+    font-size: 1.25cm;
+    /* 設定標籤文字大小 */
+    display: block;
+    /* 讓每個標籤都換行顯示 */
+    margin-top: 30px;
+    /* 設定標籤上邊距 */
+    color: rgb(228, 204, 127);
+    /* 設定標籤文字顏色 */
 }
 
 h1 {
@@ -126,16 +134,6 @@ form {
     margin-top: 1.5rem;
 }
 
-label {
-    font-size: 1.25cm;
-    /* 設定標籤文字大小 */
-    display: block;
-    /* 讓每個標籤都換行顯示 */
-    margin-top: 30px;
-    /* 設定標籤上邊距 */
-    color: rgb(228, 204, 127);
-    /* 設定標籤文字顏色 */
-}
 
 /* 通用按钮和下拉菜单样式 */
 input,
@@ -143,11 +141,11 @@ select,
 button {
     width: 50%;
     /* 设定宽度 */
-    padding: 20px;
+    padding: 10px;
     /* 设定内边距 */
     margin-top: 20px;
     /* 设定上边距 */
-    font-size: 16px;
+    font-size: 15px;
     /* 设定字体大小 */
     border: 2px solid #ccc;
     /* 设定边框 */
@@ -202,11 +200,12 @@ button:focus {
 
 /* 特定按钮样式 */
 #showPieChartButton,
+#showFileLocationButton,
 #exportHistoryButton,
 #deleteCacheButton {
     display: hidden;
     /* 让按钮换行显示 */
-    padding: 40px;
+    padding: 18px;
     /* 设定按钮内边距 */
     margin: 20px auto;
     /* 设定上下边距并居中 */
@@ -219,7 +218,7 @@ button:focus {
     font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 235px;
+    width: 183px;
 }
 
 /* 圓餅圖 */
@@ -244,13 +243,13 @@ button:focus {
 /* 按钮容器样式 */
 .button-container {
     position: absolute;
-    top: 20%; /* 距離頁面頂部的距離 */
+    top: 21%; /* 距離頁面頂部的距離 */
     left: 79%; /* 距離頁面左側的距離 */
     transform: translateX(-50%); /* 將元素居中 */
 
-    border: 3px solid #ddd;
+    border: 2px solid #ddd;
     /* 外框线 */
-    padding: 8px;
+    padding: 20px;
     /* 内边距 */
     background-color: #f9f9f9;
     /* 背景颜色 */
@@ -264,6 +263,58 @@ button:focus {
     /* 子元素均匀分布 */
     align-items: center;
     /* 子元素垂直居中 */
-    gap: 10px;
+    gap: 2px;
     /* 子元素之间的距离 */
 }
+
+.main-menu ul li.active a {
+    font-weight: bold; /* 當前選中的功能項目文字加粗 */
+    color: rgb(1, 1, 2); /* 當前選中的功能項目文字顏色 */
+    border-radius: 50px;
+}
+
+#fileLocationContainer {
+    margin-top: 20px;
+    max-height: 300px; /* 固定显示框的高度 */
+    overflow-y: scroll; /* 允许内容垂直滚动 */
+    border: 1px solid #ccc; /* 边框 */
+    padding: 10px;
+}
+
+.file-category {
+    margin-bottom: 20px;
+}
+
+.file-category h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.file-path {
+    font-size: 14px;
+    color: #666;
+}
+
+#fileLocationContainer {
+    display: none;
+    margin-top: 20px;
+    position: absolute;
+    top: 21%; /* 距離頁面頂部的距離 */
+    left: 30%; /* 距離頁面左側的距離 */
+    transform: translateX(-50%); /* 將元素居中 */
+    background-color: #f9f9f9;
+    /* 背景颜色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* 阴影 */
+    display: flex;
+    /* 使用弹性盒子模型 */
+    align-items: center;
+    /* 子元素垂直居中 */
+    max-height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+

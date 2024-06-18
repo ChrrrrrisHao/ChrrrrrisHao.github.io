@@ -62,11 +62,9 @@ h1 {
 
 form {
     background-color: var(--red);
-    display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 0 3rem;
     height: 100%;
     text-align: center;
     width: 35%;
@@ -90,18 +88,28 @@ form {
 label {
     font-size: 1.25cm; /* 設定標籤文字大小 */
     display: block; /* 讓每個標籤都換行顯示 */
-    margin-top: 30px; /* 設定標籤上邊距 */
+    margin-top: 35px; /* 設定標籤上邊距 */
+    margin-bottom: 5px; /* 設定標籤下邊距，調整間距 */
+    color: rgb(228, 204, 127); /* 設定標籤文字顏色 */
+}
+
+label[for="UserDetail"] {
+    /* 在這裡設置特定的樣式 */
+    margin-top: 0;
+    margin-bottom: 5px; /* 調整標籤下邊距，增加間距 */
     color: rgb(228, 204, 127); /* 設定標籤文字顏色 */
 }
 
 input,
 select {
-    width: 100%;
+    width: 70%;
     /* 設定輸入框和下拉選單寬度 */
-    padding: 10px;
+    padding: 15px;
     /* 設定輸入框和下拉選單內邊距 */
-    margin-top: 5px;
+    margin-top: 2px;
     /* 設定輸入框和下拉選單上邊距 */
+    border-radius: 12px;
+    text-align: center;
 }
 
 input[type="text"] {
@@ -124,6 +132,7 @@ button {
     /* 設定按鈕文字顏色 */
     text-align: center;
     /* 將按鈕文字置中 */
+    border-radius: 12px;
 }
 
 button[type="submit"] {
@@ -138,4 +147,10 @@ button[type="submit"] {
     left: 0;
     box-shadow: 0 0 10px rgb(212, 18, 18);
     border: 10px solid rgb(92, 92, 102);
+}
+
+.main-menu ul li.active a {
+    font-weight: bold; /* 當前選中的功能項目文字加粗 */
+    color: rgb(1, 1, 2); /* 當前選中的功能項目文字顏色 */
+    border-radius: 50px;
 }

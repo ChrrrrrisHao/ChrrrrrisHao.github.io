@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忘記密碼</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
+    <link href ="./fstyle.css" rel ="stylesheet" type ="text/css" media ="all">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    
+    <br>
+    <h1>設定主機位址</h1>
+    <div class="container">
+        <form action="#" class="form" id="forgotPasswordForm">
+            <h2 class="form__title">輸入主機位址</h2>
+            <input type="url" placeholder="Url" class="input" id="urlInput" />
+            <p id="message" class="success"></p>
+            <button class="btn">送出</button>
+
+        </form>
+    </div>
+    <script>
+        const form = document.getElementById("forgotPasswordForm");
+        const messageElement = document.getElementById("message");
+        let urlValue;
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            urlValue = document.getElementById("urlInput").value;
+            if (!urlValue) {
+                messageElement.textContent = "請填寫您的主機位址。";
+                messageElement.className = "error";
+                return;
+            }
+            sessionStorage.setItem('servername', urlValue);
+            
+            const url = sessionStorage.getItem('servername');
+            alert('主機位址已成功填寫！');
+            console.log("url:",url);
+            window.location.href = 'sign_in_up.html';
+        });
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+                        alert('已成功登出！');
+                        // 清除 sessionStorage 中的 username
+                        sessionStorage.removeItem('username');
+                        window.location.href = 'sign_in_up.html';
+        });
+    </script>
+</body>
+</html>

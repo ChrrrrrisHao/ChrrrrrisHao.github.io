@@ -13,13 +13,14 @@
     <div class="area"></div>
     <nav class="main-menu">
         <ul>
-            <li>
-                <a href="nobarmember.html" id="member-link">
+            <li class="active">
+                <a href="#" id="member-link">
                   <i class="fa fa-book fa-2x"></i>
                   <span class="nav-text">
                     會員資料
                   </span>
                 </a>
+            </li>
         </ul>
         <ul class="logout">
             <li>
@@ -32,53 +33,35 @@
     </nav>
     <h1>Member Profile</h1>
     <form id="memberForm">
-        <label for="UserDetail">
-            <p>Username: <span id="message"></span></p>
-        </label>
+        <label for="UserDetail">Username: <span id="message"></span></label>
         
-        <label for="gender">
-            <p>Gender: <span id="gender"></span></p>
-        </label>
+        <label for="gender">Gender:<span id="gender"></span></label>
         <select id="usergender" name="gender" required>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
         </select>
     
-        <label for="name">
-            <p>Name:<br><span id="name"></span></p>
-        </label>
+        <label for="name">Name:<span id="name"></span></label>
         <input type="text" id="Name" name="name" required>
     
-        <label for="phone">
-            <p>Phone: <span id="phone"></span></p>
-        </label>
-        <input type="tel" id="Phone" name="phone" required>
+        <label for="phone">Phone:<span id="phone"></span></label>
+        <input type="tel" placeholder="ex:0912345678" id="Phone" name="phone" required>
     
-        <label for="address">
-            <p>Address: <span id="address"></span></p>
-        </label>
+        <label for="address">Address: <span id="address"></span></label>
         <input type="text" id="Address" name="address" required>
     
-        <label for="height">
-            <p>Height (cm):<span id="height"></span></p>
-        </label>
-        <input type="text" id="Height" name="height" required>
+        <label for="height">Height (cm):<span id="height"></span></label>
+        <input type="number" id="Height" max="250" name="height" required>
     
-        <label for="weight">
-            <p>Weight (kg):<span id="weight"></span></p>
-        </label>
-        <input type="text" id="Weight" name="weight" required>
+        <label for="weight">Weight (kg):<span id="weight"></span></label>
+        <input type="number" id="Weight" max="199" name="weight" required>
+
+        <label for="token">LINE Token:<span id="token"></span></label>
+        <input type="text" placeholder="無須串接LINE通知可不填" id="Token" name="token">
     
-        <label for="email">
-            <p>Email:<br><span id="Email"></span></p>
-        </label>
-    
-        <!-- <label for="photo">
-            <p>Photo:<span id="photo"></span></p>
-        </label>
-        <input type="file" id="photo" name="photo" required multiple> -->
-    
+        <label for="email">Email:<br><span id="Email"></span></label>
+
         <button type="submit">Save</button>
     </form>
 
@@ -88,8 +71,12 @@
         const username = sessionStorage.getItem('username');
         const messageElement = document.getElementById('message');
         const responseData = document.getElementById('responseData');
+        const serverurl = sessionStorage.getItem('servername');
+        if (!sessionStorage.getItem('servername')) {
+            window.location.href = 'nobarserverurl.html';
+        }
         //在登入成功後，將使用者名稱存儲在 sessionStorage 中
-        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱
+        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱 
 
         if (!sessionStorage.getItem('username')) {
             window.location.href = 'sign_in_up.html';
@@ -98,8 +85,8 @@
         window.onload = function() {
         //console.log(username)
         axios({
-            method: 'GET',
-            url: 'http://127.0.0.1:8000/recognition/'+username+'/profile', // 使用適合您應用程式的端點 URL
+            method: 'POST',
+            url: serverurl+'/recognition/'+username+'/profile', // 使用適合您應用程式的端點 URL
             //data: JSON.stringify(formdata),
             xsrfHeaderName: "X-CSRFToken",
         })
@@ -113,6 +100,7 @@
             document.getElementById('Address').value = responseData.Address;
             document.getElementById('Height').value = responseData.Height;
             document.getElementById('Weight').value = responseData.Weight;
+            document.getElementById('Token').value = responseData.Line_Token;
             document.getElementById('Email').textContent = responseData.Email;
             console.log(response.data);
         })
@@ -120,13 +108,9 @@
             console.log(error);
         });
         
-
         if (username) {
             messageElement.innerText = username;
         }
-        // if (responseData) {
-        //     responseData.innerText = responseData;
-        // }
         };
         
         memberForm.addEventListener('submit', function(e) {
@@ -138,6 +122,7 @@
             const address = document.getElementById('Address').value;
             const height = document.getElementById('Height').value;
             const weight = document.getElementById('Weight').value;
+            const token = document.getElementById('Token').value;
             const email = document.getElementById('Email').textContent; // 不可修改
             
             formdata = {
@@ -147,13 +132,14 @@
                 "Address": address,
                 "Height": height,
                 "Weight": weight,
+                "Line_Token": token,
                 "Email": email
             };
 
             // 發送 PUT 請求
             axios({
                 method: 'PUT',
-                url: 'http://127.0.0.1:8000/recognition/'+username+'/profile',
+                url: serverurl+'/recognition/'+username+'/profile',
                 xsrfHeaderName: "X-CSRFToken",
                 data: JSON.stringify(formdata)
             })
@@ -161,7 +147,7 @@
                 console.log(response.data);
                 alert('會員資料已成功更新！');
                 // 可添加其他處理成功更新後的操作
-                window.location.href = 'nobarphoto.html?message=';
+                window.location.href = 'nobarphoto.html';
             })
             .catch(error => {
                 console.log(error);

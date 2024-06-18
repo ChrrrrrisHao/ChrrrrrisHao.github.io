@@ -237,3 +237,9 @@ label {
 		z-index: 5;
 	}
 }
+
+.main-menu ul li.active a {
+    font-weight: bold; /* 當前選中的功能項目文字加粗 */
+    color: rgb(1, 1, 2); /* 當前選中的功能項目文字顏色 */
+    border-radius: 50px;
+}

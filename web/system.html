@@ -44,6 +44,14 @@
                     </span>
                 </a>
             </li>
+            <li>
+                <a href="serverurl.html">
+                    <i class="fa fa-info fa-2x"></i>
+                     <span class="nav-text">
+                        更改主機位址
+                     </span>
+                 </a>
+            </li>
         </ul>
         <ul class="logout">
             <li>
@@ -74,8 +82,8 @@
         <button id="exportHistoryButton">匯出歷史紀錄</button>
         <button id="deleteCacheButton">刪除歷史快取</button>
     </div>
-    
     <img id="pieChart" src="" alt="圓餅圖"/>
+    <div id="fileLocationContainer"></div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const username = sessionStorage.getItem('username');
@@ -86,10 +94,14 @@
         const context = canvasElement.getContext('2d');
         const timeRangeSelect = document.getElementById('timeRange');
         const showPieChartButton = document.getElementById('showPieChartButton');
+        const showFileLocationButton = document.getElementById('showFileLocationButton');
         const exportHistoryButton = document.getElementById('exportHistoryButton');
         const deleteCacheButton = document.getElementById('deleteCacheButton');
         const pieChart = document.getElementById('pieChart');
-
+        const serverurl = sessionStorage.getItem('servername');
+        if (!sessionStorage.getItem('servername')) {
+            window.location.href = 'serverurl.html';
+        }
         if (!sessionStorage.getItem('username')) {
             window.location.href = 'sign_in_up.html';
         }
@@ -100,8 +112,8 @@
 
         window.onload = function() {
             axios({
-                method: 'GET',
-                url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/basetime', // 使用適合您應用程式的端點 URL
+                method: 'POST',
+                url: serverurl+'/recognition/basetime', // 使用適合您應用程式的端點 URL
                 xsrfHeaderName: "X-CSRFToken",
             })
         };
@@ -167,7 +179,7 @@
                 
                 axios({
                     method: 'POST',
-                    url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/' + username + '/detect',
+                    url: serverurl+'/recognition/' + username + '/detect',
                     xsrfHeaderName: "X-CSRFToken",
                     data: formData
                 })
@@ -222,7 +234,7 @@
             // console.log(formdata)
             axios({
                 method: 'PUT',
-                url: 'https://f43f-106-105-82-151.ngrok-free.app/recognition/'+username+'/detect',
+                url: serverurl+'/recognition/'+username+'/detect',
                 data: JSON.stringify(formdata),
                 responseType: 'blob'
                 
@@ -237,10 +249,60 @@
             });
         });
 
+        showFileLocationButton.addEventListener('click', function() {
+            const timeRange = document.getElementById('timeRange').value;
+            formdata = {
+                "time": timeRange
+            };
+            // console.log(formdata)
+            axios({
+            method: 'PATCH',
+            url: serverurl+'/recognition/'+username+'/detect',
+            data: JSON.stringify(formdata),
+            xsrfHeaderName: "X-CSRFToken",
+            headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                const data = response.data;
+                console.log(response.data);
+                displayFilePaths(data);
+            })
+            .catch(error => {
+                console.error('顯示失敗', error);
+            });
+        });
+        
+        function displayFilePaths(data) {
+            const fileLocationContainer = document.getElementById('fileLocationContainer');
+            fileLocationContainer.innerHTML = ''; // 清空容器内容
+
+            for (const category in data) {
+                if (data.hasOwnProperty(category)) {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'file-category';
+
+                    const categoryTitle = document.createElement('h3');
+                    categoryTitle.textContent = category;
+                    categoryDiv.appendChild(categoryTitle);
+
+                    data[category].forEach(filePath => {
+                        const filePathElement = document.createElement('p');
+                        filePathElement.textContent = filePath;
+                        filePathElement.className = 'file-path';
+                        categoryDiv.appendChild(filePathElement);
+                    });
+
+                    fileLocationContainer.appendChild(categoryDiv);
+                }
+            }
+        }
+
         exportHistoryButton.addEventListener('click', function() {
             axios({
                 method: 'PATCH',
-                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
+                url: serverurl+'/recognition/'+username+'/detect',
                 responseType: 'blob'
             })
             .then(response => {
@@ -253,14 +315,14 @@
                 link.remove();
             })
             .catch(error => {
-                console.error('匯出歷史紀錄失敗', error);
+                console.error('匯出失敗', error);
             });
         });
 
         deleteCacheButton.addEventListener('click', function() {
             axios({
                 method: 'DELETE',
-                url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
+                url: serverurl+'/recognition/' + username + '/detect',
             })
             .then(response => {
                 alert('歷史快取已刪除');
