@@ -170,7 +170,7 @@
             // 發送 PUT 請求
             axios({
                 method: 'PUT',
-                url: serverurl+'/'+username+'/profile',
+                url: serverurl+'/recognition/'+username+'/profile',
                 xsrfHeaderName: "X-CSRFToken",
                 data: JSON.stringify(formdata)
             })
