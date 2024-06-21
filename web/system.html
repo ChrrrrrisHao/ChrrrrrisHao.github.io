@@ -113,8 +113,8 @@
         window.onload = function() {
             axios({
                 method: 'POST',
-                url: serverurl+'/recognition/basetime', // 使用適合您應用程式的端點 URL
-                xsrfHeaderName: "X-CSRFToken",
+                url: serverurl+'/recognition/'+username+'/basetime', // 使用適合您應用程式的端點 URL
+                xsrfHeaderName: "X-CSRFToken"
             })
         };
 
@@ -134,10 +134,10 @@
                 console.error('Error accessing the camera: ', err);
             });
 
-        function captureFrame() {
-        // 在 canvas 上繪製當前鏡頭畫面
-            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-        }
+        // function captureFrame() {
+        // // 在 canvas 上繪製當前鏡頭畫面
+        //     context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        // }
 
         let lastFaceData = null;
 
@@ -174,39 +174,42 @@
         }
 
         function drawFaces(data) {
-            const faceLocation = data.facelocation;
-            const emotionLocation = data.emotionlocation;
-            const emotionLabel = data.emotionlabel;
-            const facename = data.facename[0];
-
+            const facenames = data.facename;         //陣列對稱
+            const faceLocations = data.facelocation;    //四個一組
+            // const emotionLocation = data.emotionlocation;
+            const emotionLabels = data.emotionlabel;    //陣列對稱
+            const faceCount = facenames.length;
+            const facelocationCount = faceLocations.length;
             let x, y, width, height;
+            for (let i = 0; i < faceCount; i++) {
+                const facename = facenames[i];
+                const emotionLabel = emotionLabels[i];
+                
+                const x = faceLocations[i * 4];
+                const y = faceLocations[i * 4 + 1];
+                const width = faceLocations[i * 4 + 2];
+                const height = faceLocations[i * 4 + 3];
 
-            // Determine the position and size of the box
-            if (faceLocation) {
-                [x, y, width, height] = faceLocation;
-            } else if (emotionLocation) {
-                [x, y, width, height] = emotionLocation;
-            } else {
-                console.error('No face or emotion location data available');
-                return;
-            }
+                // Draw the face box
+                context.strokeStyle = '#00ff00';
+                context.lineWidth = 5;
+                context.strokeRect(x-20, y-50, width*0.8, height*0.85);
 
-            // Draw the face box
-            context.strokeStyle = '#00ff00';
-            context.lineWidth = 5;
-            context.strokeRect(x-20, y-50, width*0.8, height*0.85);
-
-            // Draw the emotion label
-            context.fillStyle = '#00ff00';
-            context.font = '30px Arial';
-            context.fillText(emotionLabel, x-20 + width *0.8, y-50);
-
-            // Draw the name label (if available)
-            if (facename) {
-                context.fillText(facename, x-20, y - 50);
+                // Draw the emotion label
+                if (facename) {
+                    context.fillStyle = '#00ff00';
+                    context.font = '30px Arial';
+                    context.fillText(facename, x - 20, y - 55);
+                    // Draw the emotion label next to the facename
+                    const facenameWidth = context.measureText(facename).width;
+                    context.fillText(emotionLabel, x - 20 + facenameWidth + 10, y - 55); // 10 is the padding between the facename and emotion label
+                } else {
+                    // Draw the emotion label at the default position if facename is not available
+                    context.fillText(emotionLabel, x - 20 + width * 0.8 - context.measureText(emotionLabel).width, y - 50 + 30);
+                }
             }
         }
-
+        
         showPieChartButton.addEventListener('click', function() {
             const timeRange = document.getElementById('timeRange').value;
             formdata = {
