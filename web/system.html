@@ -139,25 +139,6 @@
             context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         }
 
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                videoElement.srcObject = stream;
-                const videoWidth = canvasElement.width;
-                const videoHeight = canvasElement.height;
-                console.log('Video width:', videoWidth);
-                console.log('Video height:', videoHeight);
-
-                // Capture frame at 60 FPS
-                setInterval(captureFrame, 16.67);
-
-                // Send to backend every second
-                setInterval(sendToBackend, 1000);
-            })
-            .catch(function(err) {
-                console.error('Error accessing the camera: ', err);
-            });
-
         let lastFaceData = null;
 
         function captureFrame() {
