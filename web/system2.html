@@ -8,12 +8,60 @@
     <link href="./functionbar.css" rel="stylesheet" type="text/css" media="all">
     <link href="./sstyle.css" rel="stylesheet" type="text/css" media="all">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* Additional responsive styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .main-menu {
+            width: 100%;
+        }
+        .main-menu ul {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .main-menu ul li {
+            flex: 1;
+            text-align: center;
+        }
+        .main-menu ul li a {
+            display: block;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .button-container select,
+        .button-container button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #pieChart {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+        }
+        #fileLocationContainer {
+            display: none; /* Hidden by default */
+        }
+    </style>
 </head>
 <body>
     <div class="area"></div>
     <nav class="main-menu">
         <ul>
-            <li>
+            <li class="active">
                 <a href="system.html">
                     <i class="fa fa-home fa-2x"></i>
                     <span class="nav-text">
@@ -23,43 +71,44 @@
             </li>
             <li>
                 <a href="member.html">
-                  <i class="fa fa-book fa-2x"></i>
-                  <span class="nav-text">
-                    會員資料
-                  </span>
+                    <i class="fa fa-book fa-2x"></i>
+                    <span class="nav-text">
+                        會員資料
+                    </span>
                 </a>
             </li>
-            <li class="#">
+            <li>
                 <a href="photo.html">
-                   <i class="fa fa-camera-retro fa-2x"></i>
+                    <i class="fa fa-camera-retro fa-2x"></i>
                     <span class="nav-text">
                         相片
                     </span>
                 </a>
+            </li>
             <li>
-               <a href="reset_password.html">
-                   <i class="fa fa-cogs fa-2x"></i>
+                <a href="reset_password.html">
+                    <i class="fa fa-cogs fa-2x"></i>
                     <span class="nav-text">
                         更改密碼
                     </span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                   <i class="fa fa-info fa-2x"></i>
+                <a href="serverurl.html">
+                    <i class="fa fa-info fa-2x"></i>
                     <span class="nav-text">
-                        關於情緒辨識
+                        更改主機位址
                     </span>
                 </a>
             </li>
         </ul>
         <ul class="logout">
             <li>
-                <a href="sign_in_up.html?logout=1">
+                <a href="#" id="logoutButton">
                     <i class="fa fa-power-off fa-2x"></i>
                     <span class="nav-text">登出</span>
                 </a>
-            </li>  
+            </li>
         </ul>
     </nav>
     <h1>AI人臉情緒辨識系統</h1>
@@ -68,56 +117,76 @@
     <label for="UserDetail">
         <p>Username: <span id="message"></span></p>
     </label>
-    <button id="showPieChartButton">顯示圓餅圖</button>
-    <img id="pieChart" src="" alt="圓餅圖"/>
+    <div class="button-container">
+        <select id="timeRange" required>
+            <option value="0">請選擇時間</option>
+            <option value="1">1 小時內</option>
+            <option value="3">3 小時內</option>
+            <option value="5">5 小時內</option>
+            <option value="12">12 小時內</option>
+            <option value="24">24 小時內</option>
+        </select>
+        <select id="peoplelist" required>
+            <option value="">請選擇人名</option>
+        </select>
+        <button id="showPieChartButton">顯示圓餅圖</button>
+        <button id="showFileLocationButton">顯示檔案位置</button>
+        <button id="exportHistoryButton">匯出歷史紀錄</button>
+        <button id="deleteCacheButton">刪除歷史快取</button>
+    </div>
+    <img id="pieChart" src="" alt="圓餅圖" />
+    <div id="fileLocationContainer"></div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const username = sessionStorage.getItem('username');
         const messageElement = document.getElementById('message');
-        const responseData = document.getElementById('responseData');
         const videoElement = document.getElementById('videoElement');
         const canvasElement = document.getElementById('canvasElement');
         const context = canvasElement.getContext('2d');
         const showPieChartButton = document.getElementById('showPieChartButton');
+        const showFileLocationButton = document.getElementById('showFileLocationButton');
+        const exportHistoryButton = document.getElementById('exportHistoryButton');
+        const deleteCacheButton = document.getElementById('deleteCacheButton');
         const pieChart = document.getElementById('pieChart');
+        const fileLocationContainer = document.getElementById('fileLocationContainer');
+        const serverurl = sessionStorage.getItem('servername');
+
+        if (!serverurl) {
+            window.location.href = 'serverurl.html';
+        }
+
+        if (!username) {
+            window.location.href = 'sign_in_up.html';
+        }
 
         if (username) {
             messageElement.innerText = username;
         }
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                videoElement.srcObject = stream;
-                const videoWidth = canvasElement.width;
-                const videoHeight = canvasElement.height;
-                console.log('Video width:', videoWidth);
-                console.log('Video height:', videoHeight);
 
-                setInterval(captureFrame, 16.67);
-                // 每秒執行一次 captureAndSendToBackend 函數
-                setInterval(sendToBackend, 1000);
+        window.onload = function() {
+            axios.post(`${serverurl}/recognition/${username}/basetime`, {}, {
+                xsrfHeaderName: "X-CSRFToken"
             })
-            .catch(function(err) {
-                console.error('Error accessing the camera: ', err);
+            .then(response => {
+                const peoplelist = response.data.peoplelist;
+                const facenameSelect = document.getElementById('peoplelist');
+                facenameSelect.innerHTML = '<option value="">請選擇人名</option>';
+                peoplelist.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    facenameSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('無法獲取人名', error);
             });
-
-        function captureFrame() {
-        // 在 canvas 上繪製當前鏡頭畫面
-            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         }
 
-
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
                 videoElement.srcObject = stream;
-                const videoWidth = canvasElement.width;
-                const videoHeight = canvasElement.height;
-                console.log('Video width:', videoWidth);
-                console.log('Video height:', videoHeight);
-
-                // Capture frame at 60 FPS
                 setInterval(captureFrame, 16.67);
-
-                // Send to backend every second
                 setInterval(sendToBackend, 1000);
             })
             .catch(function(err) {
@@ -127,30 +196,21 @@
         let lastFaceData = null;
 
         function captureFrame() {
-            // Draw current video frame on canvas
             context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-
-            // If we have face data, draw the face box and labels
             if (lastFaceData) {
                 drawFaces(lastFaceData);
             }
         }
 
         function sendToBackend() {
-            // Get image from canvas
             canvasElement.toBlob(function(blob) {
-                // Create FormData and append the image
                 const formData = new FormData();
                 formData.append('img', blob, 'camera_capture.png');
-                
-                axios({
-                    method: 'POST',
-                    url: 'http://127.0.0.1:8000/recognition/' + username + '/detect',
+                axios.post(`${serverurl}/recognition/${username}/detect`, formData, {
                     xsrfHeaderName: "X-CSRFToken",
-                    data: formData
                 })
                 .then(response => {
-                    lastFaceData = response.data; // Save the received face data
+                    lastFaceData = response.data;
                 })
                 .catch(error => {
                     console.error(error);
@@ -159,60 +219,83 @@
         }
 
         function drawFaces(data) {
-            const faceLocation = data.facelocation;
-            const emotionLocation = data.emotionlocation;
-            const emotionLabel = data.emotionlabel;
-            const facename = data.facename[0];
-
-            let x, y, width, height;
-
-            // Determine the position and size of the box
-            if (faceLocation) {
-                [x, y, width, height] = faceLocation;
-            } else if (emotionLocation) {
-                [x, y, width, height] = emotionLocation;
-            } else {
-                console.error('No face or emotion location data available');
-                return;
-            }
-
-            // Draw the face box
-            context.strokeStyle = '#00ff00';
-            context.lineWidth = 5;
-            context.strokeRect(x, y, width, height);
-
-            // Draw the emotion label
-            context.fillStyle = '#00ff00';
-            context.font = '30px Arial';
-            context.fillText(emotionLabel, x + width + 5, y);
-
-            // Draw the name label (if available)
-            if (facename) {
-                context.fillText(facename, x, y - 5);
-            }
+            const facenames = data.facename;
+            const emotionList = data.emotion;
+            facenames.forEach((name, index) => {
+                const emotion = emotionList[index];
+                context.strokeStyle = 'blue';
+                context.lineWidth = 2;
+                context.strokeRect(name.x, name.y, name.width, name.height);
+                context.fillStyle = 'blue';
+                context.font = '16px Arial';
+                context.fillText(`${name.name} (${emotion})`, name.x, name.y - 5);
+            });
         }
 
-
-
         showPieChartButton.addEventListener('click', function() {
-            axios({
-                method: 'GET',
-                url: 'http://127.0.0.1:8000/recognition/'+username+'/detect',
-                responseType: 'blob'
+            const timeRange = document.getElementById('timeRange').value;
+            const peoplelist = document.getElementById('peoplelist').value;
+            const formdata = {
+               
+
+ timeRange: timeRange,
+                facename: peoplelist
+            };
+            axios.post(`${serverurl}/recognition/${username}/emotiondata`, formdata, {
+                xsrfHeaderName: "X-CSRFToken"
             })
             .then(response => {
-                const url = URL.createObjectURL(response.data);
-                pieChart.src = url;
-                pieChart.style.display = 'block';
+                pieChart.src = `data:image/png;base64,${response.data}`;
             })
             .catch(error => {
-                console.error('擷取失敗', error);
+                console.error('無法獲取圓餅圖數據', error);
             });
         });
 
-        // 捕獲每個視頻幀並發送到後端
-        // setInterval(captureFrame, 1000); // 每隔一秒捕獲一次視頻幀
-    
+        showFileLocationButton.addEventListener('click', function() {
+            fileLocationContainer.style.display = 'block';
+            axios.post(`${serverurl}/recognition/${username}/filelocation`, {}, {
+                xsrfHeaderName: "X-CSRFToken"
+            })
+            .then(response => {
+                fileLocationContainer.innerText = response.data;
+            })
+            .catch(error => {
+                console.error('無法獲取檔案位置', error);
+            });
+        });
+
+        exportHistoryButton.addEventListener('click', function() {
+            axios.post(`${serverurl}/recognition/${username}/exporthistory`, {}, {
+                xsrfHeaderName: "X-CSRFToken"
+            })
+            .then(response => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(new Blob([response.data], { type: 'application/zip' }));
+                link.download = 'history.zip';
+                link.click();
+            })
+            .catch(error => {
+                console.error('無法匯出歷史紀錄', error);
+            });
+        });
+
+        deleteCacheButton.addEventListener('click', function() {
+            axios.post(`${serverurl}/recognition/${username}/deletecache`, {}, {
+                xsrfHeaderName: "X-CSRFToken"
+            })
+            .then(response => {
+                alert('歷史快取已刪除');
+            })
+            .catch(error => {
+                console.error('無法刪除歷史快取', error);
+            });
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            sessionStorage.clear();
+            window.location.href = 'sign_in_up.html';
+        });
     </script>
 </body>
 </html>

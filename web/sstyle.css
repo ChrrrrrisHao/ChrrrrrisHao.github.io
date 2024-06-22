@@ -134,16 +134,15 @@ form {
     margin-top: 1.5rem;
 }
 
-
-/* 通用按钮和下拉菜单样式 */
 input,
 select,
 button {
-    width: 50%;
+    width: 100%;
+    height: 60px;
     /* 设定宽度 */
     padding: 10px;
     /* 设定内边距 */
-    margin-top: 20px;
+    margin: 0px auto;
     /* 设定上边距 */
     font-size: 15px;
     /* 设定字体大小 */
@@ -203,11 +202,10 @@ button:focus {
 #showFileLocationButton,
 #exportHistoryButton,
 #deleteCacheButton {
-    display: hidden;
     /* 让按钮换行显示 */
-    padding: 18px;
+    padding: 15px;
     /* 设定按钮内边距 */
-    margin: 20px auto;
+    margin: 0px auto;
     /* 设定上下边距并居中 */
     background-color: rgba(206, 207, 201, 0.801);
     /* 设定按钮背景颜色 */
@@ -218,7 +216,7 @@ button:focus {
     font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 183px;
+    width: 180px;
 }
 
 /* 圓餅圖 */
@@ -228,7 +226,7 @@ button:focus {
     bottom: 0;
     left: 35%;
     transform: translateX(-50%);
-    max-width: 850px;
+    max-width: 800px;
 }
 
 /* 主菜单样式 */
@@ -243,10 +241,9 @@ button:focus {
 /* 按钮容器样式 */
 .button-container {
     position: absolute;
-    top: 21%; /* 距離頁面頂部的距離 */
-    left: 79%; /* 距離頁面左側的距離 */
+    top: 20%; /* 距離頁面頂部的距離 */
+    left: 85.5%; /* 距離頁面左側的距離 */
     transform: translateX(-50%); /* 將元素居中 */
-
     border: 2px solid #ddd;
     /* 外框线 */
     padding: 20px;
@@ -265,6 +262,21 @@ button:focus {
     /* 子元素垂直居中 */
     gap: 2px;
     /* 子元素之间的距离 */
+    width: 500px;
+}
+.dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* 下拉选单间隔 */
+    width: 100%;
+    height: auto;
+    /* margin: 0px auto; */
+}
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 2px; /* 调整行间距 */
+    column-gap: 2px; /* 调整列间距 */
 }
 
 .main-menu ul li.active a {
@@ -273,13 +285,6 @@ button:focus {
     border-radius: 50px;
 }
 
-#fileLocationContainer {
-    margin-top: 20px;
-    max-height: 300px; /* 固定显示框的高度 */
-    overflow-y: scroll; /* 允许内容垂直滚动 */
-    border: 1px solid #ccc; /* 边框 */
-    padding: 10px;
-}
 
 .file-category {
     margin-bottom: 20px;
@@ -301,14 +306,14 @@ button:focus {
     display: none;
     margin-top: 20px;
     position: absolute;
-    top: 21%; /* 距離頁面頂部的距離 */
-    left: 30%; /* 距離頁面左側的距離 */
+    top: 64%; /* 距離頁面頂部的距離 */
+    left: 47.5%; /* 距離頁面左側的距離 */
+    width: 10cm;
     transform: translateX(-50%); /* 將元素居中 */
     background-color: #f9f9f9;
     /* 背景颜色 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     /* 阴影 */
-    display: flex;
     /* 使用弹性盒子模型 */
     align-items: center;
     /* 子元素垂直居中 */
@@ -316,5 +321,6 @@ button:focus {
     overflow-y: scroll;
     border: 1px solid #ccc;
     padding: 10px;
+    border-radius: 20px;
 }
 

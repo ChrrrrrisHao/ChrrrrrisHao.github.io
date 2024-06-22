@@ -90,7 +90,10 @@
 
         <label for="token">LINE Token:<span id="token"></span></label>
         <input type="text" placeholder="無須串接LINE通知可不填" id="Token" name="token">
-    
+
+        <label for="notifytime">LINE Notify 間隔時間(分鐘):<span id="notifytime"></span></label>
+        <input type="number" placeholder="無須串接LINE通知可不填" max="60" min="1" id="Notifytime" name="notifytime">
+
         <label for="email">Email:<br><span id="Email"></span></label>
 
         <button type="submit">Save</button>
@@ -132,6 +135,7 @@
             document.getElementById('Height').value = responseData.Height;
             document.getElementById('Weight').value = responseData.Weight;
             document.getElementById('Token').value = responseData.Line_Token;
+            document.getElementById('Notifytime').value = responseData.Line_notifyTime;
             document.getElementById('Email').textContent = responseData.Email;
             console.log(response.data);
         })
@@ -154,6 +158,7 @@
             const height = document.getElementById('Height').value;
             const weight = document.getElementById('Weight').value;
             const token = document.getElementById('Token').value;
+            const notifytime = document.getElementById('Notifytime').value;
             const email = document.getElementById('Email').textContent; // 不可修改
             
             formdata = {
@@ -164,10 +169,10 @@
                 "Height": height,
                 "Weight": weight,
                 "Line_Token": token,
+                "Line_notifyTime": notifytime,
                 "Email": email
             };
 
-            // 發送 PUT 請求
             axios({
                 method: 'PUT',
                 url: serverurl+'/recognition/'+username+'/profile',
@@ -177,7 +182,6 @@
             .then(response => {
                 console.log(response.data);
                 alert('會員資料已成功更新！');
-                // 可添加其他處理成功更新後的操作
             })
             .catch(error => {
                 console.log(error);
@@ -188,7 +192,6 @@
         document.getElementById('logoutButton').addEventListener('click', function(event) {
             event.preventDefault();
                         alert('已成功登出！');
-                        // 清除 sessionStorage 中的 username
                         sessionStorage.removeItem('username');
                         window.location.href = 'sign_in_up.html';
         });

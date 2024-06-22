@@ -69,18 +69,25 @@
         <p>Username: <span id="message"></span></p>
     </label>
     <div class="button-container">
-        <select id="timeRange" required>
-            <option value="0">請選擇時間</option>
-            <option value="1">1 小時內</option>
-            <option value="3">3 小時內</option>
-            <option value="5">5 小時內</option>
-            <option value="12">12 小時內</option>
-            <option value="24">24 小時內</option>
-        </select>
-        <button id="showPieChartButton">顯示圓餅圖</button>
-        <button id="showFileLocationButton">顯示檔案位置</button>
-        <button id="exportHistoryButton">匯出歷史紀錄</button>
-        <button id="deleteCacheButton">刪除歷史快取</button>
+        <div class="dropdown-container">
+            <select id="timeRange" required>
+                <option value="0">請選擇時間</option>
+                <option value="1">1 小時內</option>
+                <option value="3">3 小時內</option>
+                <option value="5">5 小時內</option>
+                <option value="12">12 小時內</option>
+                <option value="24">24 小時內</option>
+            </select>
+            <select id="peoplelist" required>
+                <option value="">請選擇人名</option>
+            </select>
+        </div>
+        <div class="button-grid">
+            <button id="showPieChartButton">顯示圓餅圖</button>
+            <button id="showFileLocationButton">顯示檔案位置</button>
+            <button id="exportHistoryButton">匯出歷史紀錄</button>
+            <button id="deleteCacheButton">刪除歷史快取</button>
+        </div>
     </div>
     <img id="pieChart" src="" alt="圓餅圖"/>
     <div id="fileLocationContainer"></div>
@@ -92,13 +99,23 @@
         const videoElement = document.getElementById('videoElement');
         const canvasElement = document.getElementById('canvasElement');
         const context = canvasElement.getContext('2d');
-        const timeRangeSelect = document.getElementById('timeRange');
+        // const timeRangeSelect = document.getElementById('timeRange');
+        // const peoplelistSelect = document.getElementById('peoplelist');
         const showPieChartButton = document.getElementById('showPieChartButton');
         const showFileLocationButton = document.getElementById('showFileLocationButton');
         const exportHistoryButton = document.getElementById('exportHistoryButton');
         const deleteCacheButton = document.getElementById('deleteCacheButton');
         const pieChart = document.getElementById('pieChart');
         const serverurl = sessionStorage.getItem('servername');
+        // function isMobileDevice() {
+        //     return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // }
+        // window.onload = function() {
+        //     if (isMobileDevice()) {
+        //         window.location.href = 'system2.html';
+        //     }
+        // };
+
         if (!sessionStorage.getItem('servername')) {
             window.location.href = 'serverurl.html';
         }
@@ -113,10 +130,28 @@
         window.onload = function() {
             axios({
                 method: 'POST',
-                url: serverurl+'/recognition/'+username+'/basetime', // 使用適合您應用程式的端點 URL
+                url: serverurl+'/recognition/'+username+'/basetime', 
                 xsrfHeaderName: "X-CSRFToken"
             })
-        };
+            .then(response => {
+                const peoplelist = response.data.peoplelist;
+                const facenameSelect = document.getElementById('peoplelist');
+                console.log(peoplelist)
+                // 清空現有選項
+                facenameSelect.innerHTML = '<option value="">請選擇人名</option>';
+
+                // 填充新的選項
+                peoplelist.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    facenameSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('無法獲取人名', error);
+            });   
+        }
 
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
@@ -174,13 +209,12 @@
         }
 
         function drawFaces(data) {
-            const facenames = data.facename;         //陣列對稱
-            const faceLocations = data.facelocation;    //四個一組
-            // const emotionLocation = data.emotionlocation;
-            const emotionLabels = data.emotionlabel;    //陣列對稱
+            const facenames = data.facename;         // 陣列對稱
+            const faceLocations = data.facelocation;    // 四個一組
+            const emotionLabels = data.emotionlabel;    // 陣列對稱
             const faceCount = facenames.length;
             const facelocationCount = faceLocations.length;
-            let x, y, width, height;
+            
             for (let i = 0; i < faceCount; i++) {
                 const facename = facenames[i];
                 const emotionLabel = emotionLabels[i];
@@ -191,20 +225,28 @@
                 const height = faceLocations[i * 4 + 3];
 
                 // Draw the face box
-                context.strokeStyle = '#00ff00';
+                context.strokeStyle = '#00ff00'; // 維持原來的綠色邊框
                 context.lineWidth = 5;
-                context.strokeRect(x-20, y-50, width*0.8, height*0.85);
+                context.strokeRect(x - 20, y - 50, width * 0.6, height * 0.75);
 
                 // Draw the emotion label
                 if (facename) {
-                    context.fillStyle = '#00ff00';
-                    context.font = '30px Arial';
-                    context.fillText(facename, x - 20, y - 55);
-                    // Draw the emotion label next to the facename
-                    const facenameWidth = context.measureText(facename).width;
-                    context.fillText(emotionLabel, x - 20 + facenameWidth + 10, y - 55); // 10 is the padding between the facename and emotion label
+                    // Draw white background rectangle behind the text
+                    context.fillStyle = '#ffffff'; // 白色背景
+                    const textWidth = context.measureText(facename + ' ' + emotionLabel).width + 20; // 加上 emotionLabel 的宽度
+                    context.fillRect(x - 20, y - 75, textWidth, 55);
+
+                    // Draw black text for facename
+                    context.fillStyle = '#000000'; // 黑色字体
+                    context.font = '40px Arial';
+                    context.fillText(facename, x - 20, y - 35);
+
+                    // Draw black text for emotionLabel
+                    context.fillText(emotionLabel, x - 20 + context.measureText(facename).width + 10, y - 35); // 10 是 facename 和 emotionLabel 之间的间距
                 } else {
                     // Draw the emotion label at the default position if facename is not available
+                    context.fillStyle = '#000000'; // 黑色字体
+                    context.font = '40px Arial';
                     context.fillText(emotionLabel, x - 20 + width * 0.8 - context.measureText(emotionLabel).width, y - 50 + 30);
                 }
             }
@@ -212,10 +254,16 @@
         
         showPieChartButton.addEventListener('click', function() {
             const timeRange = document.getElementById('timeRange').value;
+            const facenameSelect = document.getElementById('peoplelist').value;
+            if (!timeRange || !facenameSelect) {
+                alert('請選擇時間和人名');
+                return;
+            }
             formdata = {
-                "time": timeRange
+                "time": timeRange,
+                "peoplelist": facenameSelect
             };
-            // console.log(formdata)
+            console.log(formdata)
             axios({
                 method: 'PUT',
                 url: serverurl+'/recognition/'+username+'/detect',
@@ -225,8 +273,10 @@
             })
             .then(response => {
                 const url = URL.createObjectURL(response.data);
+                // const pieChart = document.getElementById('pieChart');
                 pieChart.src = url;
                 pieChart.style.display = 'block';
+                fileLocationContainer.style.display = 'none';
             })
             .catch(error => {
                 console.error('擷取失敗', error);
@@ -235,10 +285,14 @@
 
         showFileLocationButton.addEventListener('click', function() {
             const timeRange = document.getElementById('timeRange').value;
+            if (timeRange == 0 ) {
+                alert('請選擇時間區間');
+                return;
+            }
             formdata = {
                 "time": timeRange
             };
-            // console.log(formdata)
+            console.log(formdata)
             axios({
             method: 'PATCH',
             url: serverurl+'/recognition/'+username+'/detect',
@@ -252,6 +306,8 @@
                 const data = response.data;
                 console.log(response.data);
                 displayFilePaths(data);
+                pieChart.style.display = 'none';
+                fileLocationContainer.style.display = 'block';
             })
             .catch(error => {
                 console.error('顯示失敗', error);
@@ -272,28 +328,74 @@
                     categoryDiv.appendChild(categoryTitle);
 
                     data[category].forEach(filePath => {
-                        const filePathElement = document.createElement('p');
-                        filePathElement.textContent = filePath;
-                        filePathElement.className = 'file-path';
-                        categoryDiv.appendChild(filePathElement);
+                        const filePathButton = document.createElement('button'); // 创建一个按钮元素
+                        filePathButton.textContent = filePath;
+                        filePathButton.className = 'file-path-button';
+                        
+                        filePathButton.addEventListener('click', () => {
+                            // 当按钮被点击时执行的操作，这里可以使用 Axios 获取图片并显示在网页中
+                            formData={
+                                "img_path": filePath
+                            }
+                            console.log(formData);
+                            axios({
+                                method: 'POST',
+                                url: serverurl+'/recognition/'+username+'/openimg',
+                                data: JSON.stringify(formData),
+                                xsrfHeaderName: "X-CSRFToken",
+                                headers: {
+                                'Content-Type': 'application/json', // 设置正确的 Content-Type
+                                },
+                                responseType: 'blob'
+                            })
+                            .then(response => {
+                                const blob = response.data;
+                                const imageUrl = URL.createObjectURL(blob);
+                                displayImage(imageUrl);
+                                console.log("1");
+                            })
+                            .catch(error => {
+                                if (error.response) {
+                                    // 请求发送成功，但后端返回了错误状态码
+                                    console.error('Error fetching image:', error.response.status, error.response.data);
+                                } else if (error.request) {
+                                    // 请求发送失败，未收到响应
+                                    console.error('Error fetching image: No response from server');
+                                } else {
+                                    // 其他错误
+                                    console.error('Error fetching image:', error.message);
+                                }
+                            });
+                        });
+                        categoryDiv.appendChild(filePathButton);
                     });
-
                     fileLocationContainer.appendChild(categoryDiv);
                 }
             }
         }
 
+        function displayImage(imageUrl) {
+            // 创建一个新的 img 元素并设置其 src 属性为 imageUrl
+            const imgElement = document.createElement('img');
+            imgElement.src = imageUrl;
+            
+            // 将图片添加到页面中适当的位置，这里假设有一个 id 为 'imageContainer' 的容器
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = ''; // 清空容器内容
+            imageContainer.appendChild(imgElement);
+        }
+
         exportHistoryButton.addEventListener('click', function() {
             axios({
-                method: 'PATCH',
-                url: serverurl+'/recognition/'+username+'/detect',
+                method: 'POST',
+                url: serverurl+'/recognition/'+username+'/exportpdf',
                 responseType: 'blob'
             })
             .then(response => {
                 const url = URL.createObjectURL(response.data);
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'history_record.csv');
+                link.setAttribute('download', 'history_record.pdf');
                 document.body.appendChild(link);
                 link.click();
                 link.remove();

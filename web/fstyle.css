@@ -140,3 +140,17 @@ h2 {
 		z-index: 5;
 	}
 }
+
+.main-menu { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 10px rgb(212, 18, 18);
+    border: 10px solid rgb(92, 92, 102);
+}
+
+.main-menu ul li.active a {
+    font-weight: bold; /* 當前選中的功能項目文字加粗 */
+    color: rgb(1, 1, 2); /* 當前選中的功能項目文字顏色 */
+    border-radius: 50px;
+}

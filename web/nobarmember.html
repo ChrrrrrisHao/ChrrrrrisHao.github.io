@@ -14,13 +14,12 @@
     <nav class="main-menu">
         <ul>
             <li class="active">
-                <a href="#" id="member-link">
+                <a href="nobarmember.html" id="member-link">
                   <i class="fa fa-book fa-2x"></i>
                   <span class="nav-text">
                     會員資料
                   </span>
                 </a>
-            </li>
         </ul>
         <ul class="logout">
             <li>
@@ -31,7 +30,7 @@
             </li>  
         </ul>
     </nav>
-    <h1>Member Profile</h1>
+    <h1>Member Profile 首次登入必填</h1>
     <form id="memberForm">
         <label for="UserDetail">Username: <span id="message"></span></label>
         
@@ -59,7 +58,10 @@
 
         <label for="token">LINE Token:<span id="token"></span></label>
         <input type="text" placeholder="無須串接LINE通知可不填" id="Token" name="token">
-    
+
+        <label for="notifytime">LINE Notify 間隔時間(分鐘):<span id="notifytime"></span></label>
+        <input type="number" placeholder="無須串接LINE通知可不填" max="60" min="1" id="Notifytime" name="notifytime">
+
         <label for="email">Email:<br><span id="Email"></span></label>
 
         <button type="submit">Save</button>
@@ -76,7 +78,7 @@
             window.location.href = 'nobarserverurl.html';
         }
         //在登入成功後，將使用者名稱存儲在 sessionStorage 中
-        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱 
+        //在其他頁面中，可以從 sessionStorage 中取得使用者名稱
 
         if (!sessionStorage.getItem('username')) {
             window.location.href = 'sign_in_up.html';
@@ -101,13 +103,13 @@
             document.getElementById('Height').value = responseData.Height;
             document.getElementById('Weight').value = responseData.Weight;
             document.getElementById('Token').value = responseData.Line_Token;
+            document.getElementById('Notifytime').value = responseData.Line_notifyTime;
             document.getElementById('Email').textContent = responseData.Email;
             console.log(response.data);
         })
         .catch(error => {
             console.log(error);
         });
-        
         if (username) {
             messageElement.innerText = username;
         }
@@ -123,6 +125,7 @@
             const height = document.getElementById('Height').value;
             const weight = document.getElementById('Weight').value;
             const token = document.getElementById('Token').value;
+            const notifytime = document.getElementById('Notifytime').value;
             const email = document.getElementById('Email').textContent; // 不可修改
             
             formdata = {
@@ -133,10 +136,10 @@
                 "Height": height,
                 "Weight": weight,
                 "Line_Token": token,
+                "Line_notifyTime": notifytime,
                 "Email": email
             };
 
-            // 發送 PUT 請求
             axios({
                 method: 'PUT',
                 url: serverurl+'/recognition/'+username+'/profile',
@@ -146,8 +149,7 @@
             .then(response => {
                 console.log(response.data);
                 alert('會員資料已成功更新！');
-                // 可添加其他處理成功更新後的操作
-                window.location.href = 'nobarphoto.html';
+                window.location.href = 'nobarphoto.html?message=';
             })
             .catch(error => {
                 console.log(error);
@@ -158,7 +160,6 @@
         document.getElementById('logoutButton').addEventListener('click', function(event) {
             event.preventDefault();
                         alert('已成功登出！');
-                        // 清除 sessionStorage 中的 username
                         sessionStorage.removeItem('username');
                         window.location.href = 'sign_in_up.html';
         });
