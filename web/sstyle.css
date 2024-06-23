@@ -49,9 +49,8 @@ html {
     width: 800px;
     /* 設置寬度為 400 像素 */
     height: 600px;
-    /* 設置高度為 300 像素 */
     /* 或者將元素固定在頁面的右下角 */
-    position: fixed;
+    position: absolute;
     /* 使用絕對定位 */
     bottom: 0;
     /* 距離底部 0 */
