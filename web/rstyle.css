@@ -46,9 +46,10 @@ h1 {
 	background-color: #2b27277a;
 	border: 1px solid #00000000;
 	padding: 20px;
-	border-radius: 2px;
-	box-shadow: 0 0 10px rgba(128, 33, 33, 0.1);
 	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(128, 33, 33, 0.1);
+	width: 100%;
+	text-align: center;
 }
 h2 {
 	font-size: 0.5cm;
@@ -89,11 +90,12 @@ label {
 	border-radius: var(--button-radius);
 	box-shadow: 0 0.9rem 1.7rem rgba(204, 7, 7, 0.25),
 		0 0.7rem 0.7rem rgba(241, 3, 3, 0.22);
-	height: 100%;
+	height: var(--max-height);
 	max-width: var(--max-width);
 	overflow: hidden;
 	position: relative;
-	width: 500%;
+	width: 80%;
+	height: auto;
 }
 
 .container__form {
