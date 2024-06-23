@@ -84,11 +84,11 @@
                     message.style.color = 'red';
                     return;
                 }
-                // if (userValue.length < 5 || passwordValue.length < 5) {
-                //     document.getElementById('message').innerText = '帳號和密碼必須至少為5個字符。';
-                //     message.style.color = 'red';
-                //     return;
-                // }
+                if (userValue.length < 8 || passwordValue.length < 8) {
+                    document.getElementById('message').innerText = '帳號和密碼必須至少為5個字符。';
+                    message.style.color = 'red';
+                    return;
+                }
                 console.log("Sign Up Form Data:");
                 console.log("User:", userValue);
                 console.log("Email:", emailValue);
