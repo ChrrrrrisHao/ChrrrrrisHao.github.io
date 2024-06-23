@@ -62,7 +62,7 @@ html {
 }
 
 label {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     padding: 5px;
@@ -70,11 +70,11 @@ label {
     background-color: #2b27277a;
     /* 可选：添加背景颜色 */
     border-radius: 20px;
-    font-size: 1.25cm;
+    font-size: 0.8cm;
     /* 設定標籤文字大小 */
     display: block;
     /* 讓每個標籤都換行顯示 */
-    margin-top: 30px;
+    /* margin-top: 30px; */
     /* 設定標籤上邊距 */
     color: rgb(228, 204, 127);
     /* 設定標籤文字顏色 */
