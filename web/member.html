@@ -48,7 +48,7 @@
                 <a href="serverurl.html">
                     <i class="fa fa-info fa-2x"></i>
                      <span class="nav-text">
-                        更改主機位址
+                        更改啟動金鑰
                      </span>
                  </a>
             </li>
@@ -90,13 +90,15 @@
 
         <label for="token">LINE Token:<span id="token"></span></label>
         <input type="text" placeholder="無須串接LINE通知可不填" id="Token" name="token">
+        <br><a href="https://notify-bot.line.me/zh_TW/" class="line-button" target="_blank">獲取LINE Token</a></br>
 
         <label for="notifytime">LINE Notify 間隔時間(分鐘):<span id="notifytime"></span></label>
         <input type="number" placeholder="無須串接LINE通知可不填" max="60" min="1" id="Notifytime" name="notifytime">
-
+        
         <label for="email">Email:<br><span id="Email"></span></label>
 
         <button type="submit">Save</button>
+        
     </form>
 
     <script>

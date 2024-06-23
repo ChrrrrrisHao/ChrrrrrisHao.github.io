@@ -157,3 +157,17 @@ button[type="submit"] {
     color: rgb(1, 1, 2); /* 當前選中的功能項目文字顏色 */
     border-radius: 50px;
 }
+
+.line-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #00C300;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
