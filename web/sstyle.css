@@ -252,7 +252,7 @@ button:focus {
 #imageContainer img {
     max-width: 100%;
     height: auto;
-    display: inline-block; /* 居中对齐 */
+    /*display: inline-block;  居中对齐 */
 }
 /* @media (min-width: 768px) and (max-width: 1024px) {
     #imageContainer {
