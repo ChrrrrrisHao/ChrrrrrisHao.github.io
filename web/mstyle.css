@@ -79,6 +79,8 @@ form {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    height: auto;
 }
 
 .form>.btn {
@@ -91,6 +93,7 @@ label {
     margin-top: 35px; /* 設定標籤上邊距 */
     margin-bottom: 5px; /* 設定標籤下邊距，調整間距 */
     color: rgb(228, 204, 127); /* 設定標籤文字顏色 */
+    width: 100%;
 }
 
 label[for="UserDetail"] {
@@ -102,7 +105,7 @@ label[for="UserDetail"] {
 
 input,
 select {
-    width: 70%;
+    width: 60%;
     /* 設定輸入框和下拉選單寬度 */
     padding: 15px;
     /* 設定輸入框和下拉選單內邊距 */
@@ -146,7 +149,7 @@ button[type="submit"] {
     top: 0;
     left: 0;
     box-shadow: 0 0 10px rgb(212, 18, 18);
-    border: 10px solid rgb(92, 92, 102);
+    /* border: 3px solid rgb(92, 92, 102); */
 }
 
 .main-menu ul li.active a {

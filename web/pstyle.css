@@ -81,6 +81,8 @@ form {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    height: auto;
 }
 
 .form>.btn {
@@ -157,7 +159,7 @@ button[id="deleteAlbumButton"] {
     top: 0;
     left: 0;
     box-shadow: 0 0 10px rgb(212, 18, 18);
-    border: 10px solid rgb(92, 92, 102);
+    /* border: 10px solid rgb(92, 92, 102); */
 }
 
 .main-menu ul li.active a {

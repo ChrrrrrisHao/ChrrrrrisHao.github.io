@@ -31,6 +31,8 @@ body {
     display: grid;
     /* height: 100vh; */
     place-items: center;
+    height: auto;
+    width: auto;
 }
 
 body,
@@ -99,6 +101,7 @@ h1 {
     top: 0;
     /* 將元素置於容器頂部 */
     border-radius: 20px;
+    text-align: center;
 }
 
 
@@ -226,7 +229,8 @@ button:focus {
     bottom: 0;
     left: 35%;
     transform: translateX(-50%);
-    max-width: 800px;
+    max-width: 100%; /* 最大宽度为视口宽度 */
+    max-height: 80vh; /* 最大高度为视口高度的80% */
 }
 
 /* 主菜单样式 */
@@ -235,7 +239,7 @@ button:focus {
     top: 0;
     left: 0;
     box-shadow: 0 0 10px rgb(212, 18, 18);
-    border: 10px solid rgb(92, 92, 102);
+    /* border: 3px solid rgb(92, 92, 102); */
 }
 
 /* 按钮容器样式 */
@@ -263,6 +267,8 @@ button:focus {
     gap: 2px;
     /* 子元素之间的距离 */
     width: 500px;
+    max-width: 600px;
+    /* width: auto; */
 }
 .dropdown-container {
     display: flex;
