@@ -116,9 +116,15 @@
                     if (response.data.message === '01') {
                         document.getElementById('message').innerText = '信箱重複,請重新輸入'; 
                         errorMessageElement.style.color = 'red';
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     } else if (response.data.message === '02') {
                         document.getElementById('message').innerText = '使用者重複,請重新輸入';
-                        errorMessageElement.style.color = 'red'; 
+                        errorMessageElement.style.color = 'red';
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                     }
                 })
                 .catch(error => {
@@ -161,10 +167,16 @@
                     if (response.data.message === '1') {
                         document.getElementById('imessage').innerText = '帳號或密碼輸入錯誤'; 
                         ierrorMessageElement.style.color = 'red';
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                         }
                     if (response.data.message === '0') {
                         document.getElementById('imessage').innerText = '登入失敗,請聯絡管理員'; 
-                        ierrorMessageElement.style.color = 'red'; 
+                        ierrorMessageElement.style.color = 'red';
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
                         }
                     else if(response.data.message !== ('1' ||'0')){
                         const username=response.data.username;

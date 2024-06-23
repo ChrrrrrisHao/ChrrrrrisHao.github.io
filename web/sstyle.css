@@ -90,7 +90,7 @@ h1 {
     /* 設定邊框 */
     padding: 20px;
     /* 設定內邊距 */
-    border-radius: 2px;
+    border-radius: 20px;
     /* 設定邊框圓角 */
     box-shadow: 0 0 10px rgba(128, 33, 33, 0.1);
     /* 設定陰影 */
@@ -99,7 +99,6 @@ h1 {
     /* 設置絕對定位 */
     top: 0;
     /* 將元素置於容器頂部 */
-    border-radius: 20px;
     text-align: center;
 }
 
