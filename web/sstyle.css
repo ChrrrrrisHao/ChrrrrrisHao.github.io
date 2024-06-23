@@ -238,8 +238,8 @@ button:focus {
 #imageContainer {
     display: hidden;
     position: absolute;
-    top: 68%; /* 距離頁面頂部的距離 */
-    left: 15%; /* 距離頁面左側的距離 */
+    top: 25%; /* 距離頁面頂部的距離 */
+    left: 37%; /* 距離頁面左側的距離 */
     width: 100%; /* 你可以设置为固定值如 '500px' */
     max-width: 400px; /* 最大宽度 */
     height: auto; /* 根据需要调整 */
@@ -252,6 +252,17 @@ button:focus {
     max-width: 100%;
     height: auto;
     display: inline-block; /* 居中对齐 */
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+    #imageContainer {
+        top: 60%;
+        left: 20%;
+        max-width: 500px;
+        border-radius: 15px;
+    }
+    #imageContainer img {
+        max-width: 90%;
+    }
 }
 
 /* 主菜单样式 */
