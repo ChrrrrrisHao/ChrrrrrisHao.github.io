@@ -75,6 +75,10 @@
     <script>
         const form = document.getElementById("forgotPasswordForm");
         const messageElement = document.getElementById("message");
+        const username = sessionStorage.getItem('username');
+        if (!sessionStorage.getItem('username')) {
+            window.location.href = 'sign_in_up.html';
+        }
         let urlValue;
         form.addEventListener("submit", (e) => {
             e.preventDefault();

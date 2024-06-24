@@ -105,18 +105,22 @@
         const memberForm = document.getElementById('memberForm');
         const urlParams = new URLSearchParams(window.location.search);
         const username = sessionStorage.getItem('username');
+        if (!sessionStorage.getItem('username')) {
+            window.location.href = 'sign_in_up.html';
+        }
         const messageElement = document.getElementById('message');
         const responseData = document.getElementById('responseData');
         const serverurl = sessionStorage.getItem('servername');
+        
+
+
         if (!sessionStorage.getItem('servername')) {
             window.location.href = 'nobarserverurl.html';
         }
         //在登入成功後，將使用者名稱存儲在 sessionStorage 中
         //在其他頁面中，可以從 sessionStorage 中取得使用者名稱 
 
-        if (!sessionStorage.getItem('username')) {
-            window.location.href = 'sign_in_up.html';
-        }
+        
 
         window.onload = function() {
         //console.log(username)
