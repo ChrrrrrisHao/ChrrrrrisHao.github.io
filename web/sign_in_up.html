@@ -84,8 +84,13 @@
                     message.style.color = 'red';
                     return;
                 }
-                if (userValue.length < 8 || passwordValue.length < 8) {
-                    document.getElementById('message').innerText = '帳號和密碼必須至少為5個字符。';
+                if (userValue.length < 5 ) {
+                    document.getElementById('message').innerText = '使用者名稱至少為5個字符。';
+                    message.style.color = 'red';
+                    return;
+                }
+                if (passwordValue.length < 8) {
+                    document.getElementById('message').innerText = '密碼至少為8個字符。';
                     message.style.color = 'red';
                     return;
                 }
